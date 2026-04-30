@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect Provider - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/material-design-iconic-font@2.2.0/dist/material-design-iconic-font.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #757575;
+            background: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 8px 0;
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            color: #616161;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            font-weight: 400;
+        }
+
+        .sidebar-menu-item:hover {
+            background: #f5f5f5;
+            color: #009688;
+        }
+
+        .sidebar-menu-item.active {
+            background: #e0f2f1;
+            color: #009688;
+            font-weight: 500;
+            border-left: 4px solid #009688;
+            padding-left: 20px;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .sidebar-submenu {
+            padding-left: 64px;
+        }
+
+        .sidebar-submenu-item {
+            display: block;
+            padding: 8px 24px;
+            color: #9e9e9e;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-submenu-item:hover {
+            color: #009688;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .top-header-bar {
+            background: #009688;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-header-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .top-header-dev {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #009688;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 12px 20px 10px;
+            color: #757575;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-tab:hover {
+            color: #009688;
+            background: #e0f2f1;
+        }
+
+        .nav-tab.active {
+            color: #009688;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #009688;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dropdown-arrow {
+            color: #757575;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .header-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #009688;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .content-main-block {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .content-main-block:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            font-weight: 500;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #212121;
+        }
+
+        .content-body {
+            padding: 24px;
+        }
+
+        .info-banner {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #424242;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-banner .icon {
+            color: #ff9800;
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .image-form-field {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background: white;
+            position: relative;
+            padding-top: 8px;
+        }
+
+        .image-form-field-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: white;
+            padding: 0 8px;
+            font-size: 13px;
+            color: #212121;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .image-form-field-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+        }
+
+        .image-form-field-hint {
+            font-size: 13px;
+            color: #9e9e9e;
+        }
+
+        .image-form-field-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .image-form-field-upload:hover {
+            background: #e0f2f1;
+        }
+
+        .image-form-field-upload .zmdi {
+            font-size: 24px;
+            color: #757575;
+            transition: color 0.2s;
+        }
+
+        .image-form-field-upload:hover .zmdi {
+            color: #009688;
+        }
+
+        .image-form-field-preview {
+            padding: 0 16px 16px;
+        }
+
+        .preview-thumb-inline {
+            display: inline-block;
+            width: 72px;
+            height: 72px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .preview-thumb-inline img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-form-field-hint-below {
+            font-size: 13px;
+            color: #9e9e9e;
+            margin-top: -12px;
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        .upload-file-selector {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 12px 16px;
+        }
+
+        .upload-placeholder-box {
+            width: 120px;
+            height: 80px;
+            border: 2px dashed #bfbfbf;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+            flex-shrink: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-placeholder-box.has-image {
+            border-style: solid;
+            border-color: #009688;
+            cursor: default;
+        }
+
+        .upload-placeholder-box.has-image:hover {
+            border-color: #009688;
+            background: #fafafa;
+            transform: none;
+        }
+
+        .upload-placeholder-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .upload-placeholder-box:hover {
+            border-color: #009688;
+            background: #e0f2f1;
+        }
+
+        .upload-placeholder-box:active {
+            background: #b2dfdb;
+            border-color: #00897b;
+            transform: scale(0.98);
+        }
+
+        .upload-placeholder-plus {
+            font-size: 32px;
+            color: #bfbfbf;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .upload-placeholder-box:hover .upload-placeholder-plus {
+            color: #009688;
+        }
+
+        .upload-action-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 8px;
+            margin-left: auto;
+        }
+
+        .upload-or-text {
+            font-size: 13px;
+            color: #bdbdbd;
+            font-weight: 400;
+        }
+
+        .upload-choose-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: #212121;
+            background: #ffffff;
+            border: 1px solid #bdbdbd;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .upload-choose-btn:hover {
+            background: #f5f5f5;
+            border-color: #9e9e9e;
+        }
+
+        .upload-icon-btn {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: 18px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .upload-icon-btn i {
+            pointer-events: none;
+            font-size: 20px;
+        }
+
+        .upload-filename {
+            flex: 1;
+            font-size: 13px;
+            color: #757575;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .upload-alt-link {
+            font-size: 13px;
+            color: #009688;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .upload-alt-link:hover {
+            color: #00796b;
+            text-decoration: underline;
+        }
+
+        .upload-alt-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: #212121;
+            background: #ffffff;
+            border: 1px solid #bdbdbd;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .upload-alt-btn:hover {
+            background: #f5f5f5;
+            border-color: #9e9e9e;
+        }
+
+        .image-form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .image-form-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .image-form-left {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .image-form-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .image-form-hint {
+            font-size: 12px;
+            color: #9e9e9e;
+        }
+
+        .image-form-right {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .image-form-right .zmdi {
+            font-size: 22px;
+            color: #757575;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .image-form-right .zmdi:hover {
+            color: #009688;
+        }
+
+        .form-image-preview {
+            width: 100%;
+            padding-top: 12px;
+        }
+
+        .form-section-divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 8px 0;
+        }
+
+        .section-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-card-header {
+            padding: 16px 20px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .section-card-header:hover {
+            background: #f5f5f5;
+        }
+
+        .section-card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-card-toggle {
+            font-size: 20px;
+            color: #757575;
+            transition: transform 0.3s;
+        }
+
+        .section-card.collapsed .section-card-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .section-card-body {
+            padding: 14px 16px;
+        }
+
+        .section-card.collapsed .section-card-body.hidden {
+            display: none;
+        }
+
+        .file-input-hidden {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .image-upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #009688;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 150, 136, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .image-upload-button:hover {
+            background: #00796b;
+            box-shadow: 0 4px 8px rgba(0, 150, 136, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .image-upload-button span {
+            font-size: 18px;
+        }
+
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: #fafafa;
+            border: 2px dashed #bdbdbd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .image-placeholder:hover {
+            border-color: #009688;
+            background: #e0f2f1;
+        }
+
+        .image-placeholder .placeholder-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #9e9e9e;
+            flex-shrink: 0;
+        }
+
+        .image-placeholder .placeholder-text {
+            font-size: 14px;
+            color: #757575;
+        }
+
+        .image-placeholder .placeholder-text strong {
+            color: #212121;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .image-placeholder .placeholder-arrow {
+            margin-left: auto;
+            font-size: 20px;
+            color: #bdbdbd;
+        }
+
+        .preview-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .preview-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-thumb.stock-thumb {
+            border-color: #009688;
+        }
+
+        .preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .preview-info .preview-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #212121;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-info .preview-size {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 4px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .preview-action-btn {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            color: #757575;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .preview-action-btn:hover:not(:disabled) {
+            border-color: #009688;
+            color: #009688;
+            background: #e0f2f1;
+        }
+
+        .preview-action-btn.remove {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .preview-action-btn.remove:hover {
+            background: #f44336;
+            color: white;
+        }
+
+        .preview-badge {
+            display: inline-block;
+            background: #009688;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.selected {
+            border-color: #009688;
+            box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.3);
+        }
+
+        .photo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .photo-item {
+            position: relative;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: grab;
+            transition: all 0.2s;
+            background: white;
+            width: 100px;
+            height: 80px;
+        }
+
+        .photo-item:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .photo-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .photo-item.drag-over {
+            border-color: #009688;
+            box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.3);
+        }
+
+        .photo-item.cover {
+            border: 2px solid #009688;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-cover-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: #009688;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .photo-remove-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(66, 66, 66, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 1;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        .photo-remove-btn:hover {
+            background: #f44336;
+            transform: scale(1.1);
+        }
+        }
+
+        .photo-remove-btn:hover {
+            background: #f44336;
+        }
+
+        .photo-index {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .cover-status {
+            padding: 12px 16px;
+            background: #e0f2f1;
+            border-left: 4px solid #009688;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #00695c;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cover-status .icon {
+            font-size: 20px;
+            color: #009688;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #757575;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+            border-color: #bdbdbd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: #009688;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 150, 136, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #00796b;
+            box-shadow: 0 4px 8px rgba(0, 150, 136, 0.4);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .source-modal {
+            background: white;
+            border-radius: 8px;
+            width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14);
+        }
+
+        .source-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+        }
+
+        .source-modal-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #212121;
+        }
+
+        .source-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #757575;
+            transition: all 0.2s;
+        }
+
+        .source-modal-close:hover {
+            background: #f5f5f5;
+            color: #212121;
+        }
+
+        .source-modal-body {
+            padding: 20px;
+        }
+
+        .source-method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .source-method-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 2px solid #e8e8e8;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .source-method-item:hover {
+            border-color: #0078D4;
+            background: #f0f7fc;
+        }
+
+        .source-method-item .method-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 6px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .source-method-item .method-text {
+            flex: 1;
+        }
+
+        .source-method-item .method-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .source-method-item .method-desc {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 2px;
+        }
+
+        .source-method-item .method-arrow {
+            font-size: 14px;
+            color: #bfbfbf;
+        }
+
+        .source-step-content {
+            display: none;
+        }
+
+        .source-step-content.active {
+            display: block;
+        }
+
+        .step-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #8c8c8c;
+            cursor: pointer;
+            background: none;
+            border: none;
+            margin-bottom: 12px;
+            padding: 4px 0;
+        }
+
+        .step-back-btn:hover {
+            color: #0078D4;
+        }
+
+        .modal-upload-area {
+            border: 2px dashed #cccccc;
+            border-radius: 0;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s;
+            background: #fafafa;
+        }
+
+        .modal-upload-area:hover {
+            border-color: #0078D4;
+            background: #f0f7fc;
+        }
+
+        .modal-upload-area.dragover {
+            border-color: #0078D4;
+            background: #e6f2fa;
+        }
+
+        .modal-upload-area .upload-icon {
+            font-size: 36px;
+            color: #bfbfbf;
+            margin-bottom: 8px;
+        }
+
+        .modal-upload-area .upload-label {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.85);
+            font-weight: 500;
+        }
+
+        .modal-upload-area .upload-hint {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 4px;
+        }
+
+        .modal-stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-stock-item {
+            position: relative;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-stock-item:hover {
+            border-color: #0078D4;
+        }
+
+        .modal-stock-item.selected {
+            border-color: #0078D4;
+            box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3);
+        }
+
+        .modal-stock-item img {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .stock-gallery-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stock-gallery-overlay.active {
+            display: flex;
+        }
+
+        .stock-gallery-modal {
+            background: white;
+            border-radius: 8px;
+            width: 620px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14);
+            overflow: hidden;
+        }
+
+        .stock-gallery-header {
+            background: white;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stock-gallery-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212121;
+        }
+
+        .stock-gallery-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9e9e9e;
+            transition: all 0.2s;
+        }
+
+        .stock-gallery-close:hover {
+            background: #f5f5f5;
+            color: #212121;
+        }
+
+        .stock-gallery-desc {
+            padding: 14px 24px 0;
+            font-size: 14px;
+            color: #424242;
+            line-height: 1.5;
+        }
+
+        .stock-gallery-search {
+            margin: 12px 24px 0;
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0 12px;
+            background: white;
+        }
+
+        .stock-gallery-search .zmdi {
+            font-size: 18px;
+            color: #9e9e9e;
+            margin-right: 10px;
+        }
+
+        .stock-gallery-search input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #212121;
+            background: transparent;
+        }
+
+        .stock-gallery-search input::placeholder {
+            color: #bdbdbd;
+        }
+
+        .stock-gallery-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 14px 24px 0;
+        }
+
+        .stock-tab {
+            padding: 5px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            background: white;
+            font-size: 13px;
+            color: #616161;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stock-tab:hover {
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .stock-tab.active {
+            background: #009688;
+            border-color: #009688;
+            color: white;
+        }
+
+        .stock-gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 14px 24px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 200px;
+            max-height: 360px;
+        }
+
+        .stock-gallery-item {
+            position: relative;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .stock-gallery-item:hover {
+            border-color: #009688;
+        }
+
+        .stock-gallery-item.selected {
+            border-color: #009688;
+            box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.3);
+        }
+
+        .stock-gallery-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .stock-gallery-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 6px 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stock-gallery-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            border-top: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .stock-gallery-status {
+            font-size: 13px;
+            color: #757575;
+        }
+
+        .stock-gallery-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stock-btn-secondary {
+            padding: 8px 22px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+            color: #212121;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stock-btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .stock-btn-primary {
+            padding: 8px 22px;
+            border: none;
+            border-radius: 4px;
+            background: #80cbc4;
+            font-size: 14px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stock-btn-primary:not(:disabled):hover {
+            background: #009688;
+        }
+
+        .stock-btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint-text {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.54);
+            line-height: 1.4;
+        }
+
+        .crop-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crop-modal-overlay.active {
+            display: flex;
+        }
+
+        .crop-modal-box {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14);
+            position: relative;
+            z-index: 1001;
+        }
+
+        .crop-modal-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+
+        .crop-modal-heading {
+            font-size: 18px;
+            font-weight: 500;
+            color: #212121;
+        }
+
+        .crop-modal-xbtn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #757575;
+            transition: all 0.2s;
+        }
+
+        .crop-modal-xbtn:hover {
+            background: #f5f5f5;
+            color: #212121;
+        }
+
+        .crop-modal-content {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+        }
+
+        .crop-main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+
+        .crop-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .crop-img-box {
+            flex: 1;
+            min-height: 300px;
+            max-height: 500px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .crop-img-box img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .crop-ratio-panel {
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .crop-ratio-panel-title {
+            font-size: 13px;
+            color: #616161;
+            margin-bottom: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .crop-ratio-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .crop-ratio-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: #757575;
+            transition: all 0.2s;
+        }
+
+        .crop-ratio-btn:hover {
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .crop-ratio-btn.active {
+            border-color: #009688;
+            background: #009688;
+            color: white;
+        }
+
+        .crop-preview-panel {
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .crop-preview-panel-title {
+            font-size: 13px;
+            color: #616161;
+            margin-bottom: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .crop-preview-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .crop-preview-wrap img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .crop-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .crop-tool-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 18px;
+            color: #757575;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crop-tool-btn:hover {
+            border-color: #009688;
+            color: #009688;
+            background: #e0f2f1;
+        }
+
+        .crop-modal-bottom {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .crop-modal-bottom button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .crop-modal-bottom .btn-secondary {
+            background: white;
+            color: #757575;
+            border: 1px solid #e0e0e0;
+        }
+
+        .crop-modal-bottom .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .crop-modal-bottom .btn-primary {
+            background: #009688;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 150, 136, 0.3);
+        }
+
+        .crop-modal-bottom .btn-primary:hover {
+            background: #00796b;
+        }
+
+        /* Cropper.js CSS Overrides - scope to crop-img-box only to avoid covering buttons */
+        #cropperModal .crop-img-box {
+            position: relative;
+        }
+        #cropperModal .crop-img-box .cropper-container {
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 500px;
+            direction: ltr;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        #cropperModal .cropper-wrap-box,
+        #cropperModal .cropper-canvas,
+        #cropperModal .cropper-drag-box,
+        #cropperModal .cropper-crop-box,
+        #cropperModal .cropper-modal {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        #cropperModal .cropper-img {
+            display: block;
+            max-width: none;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        #cropperModal .cropper-face {
+            display: block;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        /* Hide the default cropper image since we handle it ourselves */
+        #cropperModal .cropper-img[src=""] {
+            display: none;
+        }
+
+        .cover-preview-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .cover-preview-thumb {
+            width: 80px;
+            height: 45px;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+        }
+
+        .cover-preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cover-preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cover-preview-info .cover-preview-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .cover-preview-info .cover-preview-source {
+            font-size: 11px;
+            color: #8c8c8c;
+            margin-top: 2px;
+        }
+
+        .page-footer {
+            padding: 16px 24px;
+            font-size: 12px;
+            color: #9e9e9e;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .page-footer a {
+            color: #9e9e9e;
+            text-decoration: none;
+        }
+
+        .page-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">Marketing</div>
+        <nav class="sidebar-menu">
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-chart"></i></div>
+                <span>Insights</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-link"></i></div>
+                <span>Connections</span>
+            </div>
+            <div class="sidebar-menu-item active">
+                <div class="sidebar-icon"><i class="zmdi zmdi-assignment"></i></div>
+                <span>Profiles</span>
+            </div>
+            <div class="sidebar-submenu">
+                <div class="sidebar-submenu-item">Brands and Photos</div>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-graduation-cap"></i></div>
+                <span>Admissions</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-accounts"></i></div>
+                <span>Leads</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-file-text"></i></div>
+                <span>Applications</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon"><i class="zmdi zmdi-library"></i></div>
+                <span>Enrollments</span>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="content-area">
+        <div class="top-header-bar">
+            <span class="top-header-title">CareConnect Provider</span>
+            <span class="top-header-dev">DEV 5.0.2608-6</span>
+        </div>
+
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 48 48" width="48" height="48" fill="#009688">
+                            <path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-2 30l-10-10 2.83-2.83L22 28.34l13.17-13.17L38 18 22 34z"/>
+                        </svg>
+                    </div>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab">Home</button>
+                    <button class="nav-tab">Students</button>
+                    <button class="nav-tab">Attendance</button>
+                    <button class="nav-tab">Subsidies</button>
+                    <button class="nav-tab">Documents</button>
+                    <button class="nav-tab">Messaging</button>
+                    <button class="nav-tab">Billing</button>
+                    <button class="nav-tab active">Marketing</button>
+                    <button class="nav-tab">Admin</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <span style="font-size: 13px; color: #757575;">English</span>
+                <span class="dropdown-arrow"><i class="zmdi zmdi-chevron-down"></i></span>
+                <div class="header-user-avatar">A</div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content-main-block">
+                <div class="content-header">
+                    <div class="content-title">Brands and Photos</div>
+                </div>
+                <div class="content-body">
+                    <div class="info-banner" style="border-radius:8px;border:1px solid #ffecb3;background:#fff8e1;">
+                        <span class="icon"><i class="zmdi zmdi-info"></i></span>
+                        <span>Photo Consent Disclosure: Featured photos must be used with the express written consent of parents/legal guardians and are published in accordance with all applicable laws and regulations. These images are intended solely for promotional and informational purposes.</span>
+                    </div>
+
+                    <div class="image-form-field" id="logoSection">
+                        <span class="image-form-field-label">Logo Image</span>
+                        <div class="upload-file-selector">
+                            <div class="upload-placeholder-box" onclick="triggerLogoLocalUpload()">
+                                <span class="upload-placeholder-plus">+</span>
+                            </div>
+                            <div class="upload-action-row">
+                                <button type="button" class="upload-choose-btn" onclick="triggerLogoLocalUpload()">Upload image</button>
+                                <span class="upload-or-text">or</span>
+                                <button type="button" class="upload-choose-btn upload-alt-btn" onclick="applyDefaultStockLogo()">Use Stock</button>
+                            </div>
+                            <input type="file" id="logoLocalInput" accept="image/*" class="file-input-hidden" onchange="handleLogoLocalUpload(event)">
+                        </div>
+                        <div id="logoPreviewContainer" class="image-form-field-preview hidden"></div>
+                    </div>
+                    <div class="image-form-field-hint-below">Minimum size: 80 x 80</div>
+
+                    <div class="image-form-field" id="headerSection">
+                        <span class="image-form-field-label">Header Image</span>
+                        <div class="upload-file-selector">
+                            <div class="upload-placeholder-box" onclick="triggerHeaderLocalUpload()">
+                                <span class="upload-placeholder-plus">+</span>
+                            </div>
+                            <div class="upload-action-row">
+                                <button type="button" class="upload-choose-btn" onclick="triggerHeaderLocalUpload()">Upload image</button>
+                                <span class="upload-or-text">or</span>
+                                <button type="button" class="upload-choose-btn upload-alt-btn" onclick="openHeaderStockGallery()">Use Stock</button>
+                            </div>
+                            <input type="file" id="headerLocalInput" accept="image/*" class="file-input-hidden" onchange="handleHeaderLocalUpload(event)">
+                        </div>
+                        <div id="headerPreviewContainer" class="image-form-field-preview hidden"></div>
+                    </div>
+                    <div class="image-form-field-hint-below">Minimum size: 600 x 100</div>
+
+                    <div class="image-form-field" id="photoSection">
+                        <span class="image-form-field-label">Album Photos</span>
+                        <div class="upload-file-selector" id="photoUploadSelector">
+                            <div class="upload-placeholder-box" onclick="triggerPhotoLocalUpload()">
+                                <span class="upload-placeholder-plus">+</span>
+                            </div>
+                            <div class="upload-action-row">
+                                <button type="button" class="upload-choose-btn" onclick="triggerPhotoLocalUpload()">Upload image</button>
+                            </div>
+                            <input type="file" id="photoInput" accept="image/*" class="file-input-hidden" onchange="handlePhotoLocalUpload(event)">
+                        </div>
+                        <div class="image-form-field-preview">
+                            <div id="photoGrid" class="photo-grid"></div>
+                        </div>
+                    </div>
+                    <div class="image-form-field-hint-below">The first photo will be used as Cover Image.</div>
+
+                    <div class="image-form-field" id="coverImageSection">
+                        <span class="image-form-field-label">Cover Image</span>
+                        <div class="upload-file-selector">
+                            <div class="upload-placeholder-box" onclick="openCoverUpload()">
+                                <span class="upload-placeholder-plus">+</span>
+                            </div>
+                            <div class="upload-action-row">
+                                <button type="button" class="upload-choose-btn" onclick="openCoverUpload()">Upload image</button>
+                            </div>
+                            <input type="file" id="coverManualInput" accept="image/*" class="file-input-hidden" onchange="handleCoverManualUpload(event)">
+                        </div>
+                        <div id="coverPreviewContainer" class="image-form-field-preview hidden"></div>
+                    </div>
+                    <div class="image-form-field-hint-below">Auto-selected from Album Photos (first) or Header.</div>
+
+                    <div class="action-buttons" style="margin-top:24px;">
+                        <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+                        <button class="btn btn-secondary" onclick="resetForm()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            <span class="HIDE-MOBILE">Copyright © </span>2026
+            <a href="https://www.mcttechnology.com" target="_blank" rel="noopener noreferrer">MCT Technology Inc.</a>
+            <span class="HIDE-MOBILE"> All rights reserved.</span> dev 5.0.2608-6
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="sourceModal" onclick="closeSourceModal(event)">
+        <div class="source-modal" onclick="event.stopPropagation()">
+            <div class="source-modal-header">
+                <div class="source-modal-title" id="sourceModalTitle">Set Image</div>
+                <button class="source-modal-close" onclick="closeSourceModal()">&times;</button>
+            </div>
+            <div class="source-modal-body">
+                <div id="sourceMethodList" class="source-method-list"></div>
+                <div id="sourceStepContent" class="source-step-content">
+                    <button class="step-back-btn" onclick="showSourceMethods()">&#9664; Back</button>
+                    <div id="sourceStepBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stock-gallery-overlay" id="headerStockGallery" onclick="closeHeaderStockGallery(event)">
+        <div class="stock-gallery-modal" onclick="event.stopPropagation()">
+            <div class="stock-gallery-header">
+                <div class="stock-gallery-title">Select Header Image</div>
+                <button class="stock-gallery-close" onclick="closeHeaderStockGallery()">&times;</button>
+            </div>
+            <div class="stock-gallery-desc">Browse and select an image from the system library to use as your header</div>
+            <div class="stock-gallery-grid" id="stockGalleryGrid"></div>
+            <div class="stock-gallery-footer">
+                <span class="stock-gallery-status" id="stockGalleryStatus">Click an image to select it</span>
+                <div class="stock-gallery-actions">
+                    <button class="stock-btn-secondary" onclick="closeHeaderStockGallery()">Cancel</button>
+                    <button class="stock-btn-primary" id="btnUseStockImage" onclick="confirmStockImage()" disabled>Use This Image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="crop-modal-overlay" id="cropperModal">
+        <div class="crop-modal-box">
+            <div class="crop-modal-top">
+                <div class="crop-modal-heading" id="cropperTitle">Crop Image</div>
+                <button class="crop-modal-xbtn" onclick="closeCropper()"><i class="zmdi zmdi-close"></i></button>
+            </div>
+
+            <div class="crop-modal-content">
+                <div class="crop-main-area">
+                    <div class="crop-img-box">
+                        <img id="cropperImage" src="" alt="Image to crop">
+                    </div>
+                </div>
+                <div class="crop-sidebar">
+                    <div class="crop-ratio-panel">
+                        <div class="crop-ratio-panel-title">Aspect Ratio</div>
+                        <div class="crop-ratio-btns" id="aspectRatioBtns">
+                        </div>
+                    </div>
+                    <div class="crop-toolbar">
+                        <button class="crop-tool-btn" onclick="zoomCropper(-0.1)" title="Zoom Out">
+                            <i class="zmdi zmdi-zoom-out"></i>
+                        </button>
+                        <button class="crop-tool-btn" onclick="zoomCropper(0.1)" title="Zoom In">
+                            <i class="zmdi zmdi-zoom-in"></i>
+                        </button>
+                        <button class="crop-tool-btn" onclick="rotateCropper(-45)" title="Rotate Left">
+                            <i class="zmdi zmdi-rotate-left"></i>
+                        </button>
+                        <button class="crop-tool-btn" onclick="rotateCropper(45)" title="Rotate Right">
+                            <i class="zmdi zmdi-rotate-right"></i>
+                        </button>
+                        <button class="crop-tool-btn" onclick="resetCropper()" title="Reset">
+                            <i class="zmdi zmdi-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="crop-modal-bottom">
+                <button class="btn btn-secondary" onclick="closeCropper()"><i class="zmdi zmdi-close"></i> Cancel</button>
+                <button class="btn btn-primary" onclick="applyCrop()"><i class="zmdi zmdi-check"></i> Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script>
+        const metroColors = [
+            { name: 'Metro Blue', value: '#0078D4' },
+            { name: 'Metro Light Blue', value: '#00BCF2' },
+            { name: 'Metro Teal', value: '#00B294' },
+            { name: 'Metro Green', value: '#107C10' },
+            { name: 'Metro Orange', value: '#CA5010' },
+            { name: 'Metro Red', value: '#E81123' },
+            { name: 'Metro Magenta', value: '#E3008C' },
+            { name: 'Metro Purple', value: '#8764B8' },
+            { name: 'Metro Dark Blue', value: '#003DA5' },
+            { name: 'Metro Steel', value: '#4C4A48' },
+            { name: 'Metro Grey', value: '#69797E' },
+            { name: 'Metro Light Grey', value: '#A0AEB2' },
+        ];
+
+        const basicColors = [
+            { name: 'Black', value: '#000000' },
+            { name: 'White', value: '#FFFFFF' },
+        ];
+
+        const allColors = [...basicColors, ...metroColors];
+
+        const stockImages = [];
+        for (let i = 1; i <= 248; i++) {
+            stockImages.push(`https://ik.imagekit.io/carecloud/media-ustest/istock1280/istock_${i}.jpg`);
+        }
+
+        const stockGalleryData = [
+            { src: stockImages[0], name: 'Mountain Landscape', category: 'nature' },
+            { src: stockImages[1], name: 'Forest Path', category: 'nature' },
+            { src: stockImages[2], name: 'Ocean Beach Sunset', category: 'nature' },
+            { src: stockImages[3], name: 'Green Meadow', category: 'nature' },
+            { src: stockImages[4], name: 'City Skyline', category: 'urban' },
+            { src: stockImages[5], name: 'Autumn Leaves', category: 'nature' },
+            { src: stockImages[6], name: 'Childcare Center', category: 'facility' },
+            { src: stockImages[7], name: 'Preschool Playground', category: 'facility' },
+            { src: stockImages[8], name: 'Modern Office Building', category: 'urban' },
+            { src: stockImages[9], name: 'Lake Reflection', category: 'nature' },
+            { src: stockImages[10], name: 'Urban Street View', category: 'urban' },
+            { src: stockImages[11], name: 'Classroom Interior', category: 'facility' },
+        ];
+
+        let headerGalleryState = {
+            selectedUrl: null,
+            currentCategory: 'all',
+            searchQuery: '',
+        };
+
+        const currentProviderType = 'general';
+
+        const stockLogoByType = {
+            srpp: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23ff9800" width="200" height="200"/><text x="100" y="120" text-anchor="middle" font-size="72" font-weight="bold" fill="white" font-family="Arial">SRPP</text></svg>',
+            submission: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%234caf50" width="200" height="200"/><text x="100" y="120" text-anchor="middle" font-size="48" font-weight="bold" fill="white" font-family="Arial">SUB</text></svg>',
+            general: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23009688" width="200" height="200"/><text x="100" y="120" text-anchor="middle" font-size="48" font-weight="bold" fill="white" font-family="Arial">GEN</text></svg>',
+        };
+
+        const stockHeaderByType = {
+            srpp: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="200"><rect fill="%23ff9800" width="1200" height="200"/><text x="600" y="120" text-anchor="middle" font-size="48" font-weight="bold" fill="white" font-family="Arial">Payment Provider</text></svg>',
+            submission: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="200"><rect fill="%234caf50" width="1200" height="200"/><text x="600" y="120" text-anchor="middle" font-size="48" font-weight="bold" fill="white" font-family="Arial">Submission Provider</text></svg>',
+            general: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="200"><rect fill="%23009688" width="1200" height="200"/><text x="600" y="120" text-anchor="middle" font-size="48" font-weight="bold" fill="white" font-family="Arial">General Provider</text></svg>',
+        };
+
+        const aspectRatioConfig = {
+            logo: { ratios: [1], labels: ['1:1'], default: 1 },
+            header: { ratios: [6], labels: ['6:1'], default: 6 },
+            photo: { ratios: [16/9, 9/16, 1], labels: ['16:9', '9:16', '1:1'], default: 16/9 },
+            cover: { ratios: [16/9], labels: ['16:9'], default: 16/9 },
+        };
+
+        const resolutionConfig = {
+            logo: { minW: 80, minH: 80, maxW: 512, maxH: 512, label: 'Logo' },
+            header: { minW: 600, minH: 100, maxW: 2400, maxH: 400, label: 'Header' },
+            cover: { minW: 320, minH: 180, maxW: 1920, maxH: 1920, label: 'Cover' },
+            photo: { minW: 320, minH: 180, maxW: 1920, maxH: 1920, label: 'Photo' },
+        };
+
+        let imageData = {
+            logo: null,
+            header: null,
+            headerColor: null,
+            photos: [],
+            cover: null,
+            coverSource: 'auto',
+        };
+
+        let cropperState = {
+            type: null,
+            cropperInstance: null,
+            imageData: null,
+        };
+
+        let modalTargetType = null;
+
+        const sourceMethods = {
+            logo: [
+                { id: 'upload', icon: '&#128229;', label: 'Upload Local', desc: 'Select an image from your computer' },
+                { id: 'stock', icon: '&#128444;', label: 'Use Stock Photo', desc: 'Auto-assigned by your Provider Type' },
+            ],
+            header: [
+                { id: 'upload', icon: '&#128229;', label: 'Upload Local', desc: 'Select an image from your computer' },
+                { id: 'stock', icon: '&#128444;', label: 'Use Stock Photo', desc: 'Choose from our stock photo gallery' },
+            ],
+        };
+
+        function init() {
+            loadStockGrids();
+        }
+
+        function buildColorPalette(containerId, colors, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            colors.forEach((color) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color.value;
+                swatch.title = color.name;
+                if (color.value === '#FFFFFF') {
+                    swatch.style.border = '1px solid #d9d9d9';
+                }
+                swatch.onclick = () => selectColor(containerId, swatch, color.value, type);
+                container.appendChild(swatch);
+            });
+        }
+
+        function selectColor(containerId, element, color, type) {
+            document.querySelectorAll(`#${containerId} .color-swatch`).forEach(s => s.classList.remove('selected'));
+            element.classList.add('selected');
+
+            if (type === 'headerColor') {
+                imageData.headerColor = color;
+                imageData.header = null;
+                const containerId = 'headerPreviewContainer';
+                const container = document.getElementById(containerId);
+                container.innerHTML = `
+                    <div class="preview-box">
+                        <div class="preview-thumb">
+                            <div style="width:100%;height:100%;background-color:${color};"></div>
+                        </div>
+                        <div class="preview-info">
+                            <div class="preview-name">Header</div>
+                            <div class="preview-size">Solid Color</div>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="preview-action-btn remove" onclick="removeImage('header')">Remove</button>
+                        </div>
+                    </div>
+                `;
+                container.classList.remove('hidden');
+                document.getElementById('headerPlaceholder').classList.add('hidden');
+                updateCoverFromAuto();
+            }
+        }
+
+        function loadStockGrids() {
+        }
+
+        function openCoverUpload() {
+            document.getElementById('coverManualInput').click();
+        }
+
+        function openSourceModal(type) {
+            modalTargetType = type;
+            const modal = document.getElementById('sourceModal');
+            const title = document.getElementById('sourceModalTitle');
+            title.textContent = type === 'logo' ? 'Set Logo Image' : 'Set Header Image';
+
+            document.getElementById('sourceMethodList').classList.remove('hidden');
+            document.getElementById('sourceStepContent').classList.remove('active');
+
+            showSourceMethods();
+            modal.classList.add('active');
+        }
+
+        function closeSourceModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('sourceModal').classList.remove('active');
+        }
+
+        function closeSourceModalDirect() {
+            document.getElementById('sourceModal').classList.remove('active');
+        }
+
+        function showSourceMethods() {
+            const list = document.getElementById('sourceMethodList');
+            const methods = sourceMethods[modalTargetType];
+
+            list.innerHTML = methods.map(m => `
+                <div class="source-method-item" onclick="selectSourceMethod('${m.id}')">
+                    <div class="method-icon">${m.icon}</div>
+                    <div class="method-text">
+                        <div class="method-label">${m.label}</div>
+                        <div class="method-desc">${m.desc}</div>
+                    </div>
+                    <div class="method-arrow">&#10095;</div>
+                </div>
+            `).join('');
+
+            list.classList.remove('hidden');
+            document.getElementById('sourceStepContent').classList.remove('active');
+        }
+
+        function selectSourceMethod(method) {
+            document.getElementById('sourceMethodList').classList.add('hidden');
+            const stepContent = document.getElementById('sourceStepContent');
+            stepContent.classList.add('active');
+
+            const body = document.getElementById('sourceStepBody');
+
+            if (method === 'upload') {
+                body.innerHTML = `
+                    <div class="modal-upload-area" onclick="document.getElementById('${modalTargetType}ModalInput').click()" ondragover="handleModalDragOver(event)" ondragleave="handleModalDragLeave(event)" ondrop="handleModalDrop(event)">
+                        <div class="upload-icon">&#128247;</div>
+                        <div class="upload-label">Click or drag to upload</div>
+                        <div class="upload-hint">JPG, PNG, GIF supported</div>
+                        <input type="file" id="${modalTargetType}ModalInput" accept="image/*" class="hidden" onchange="handleModalFileSelect(event)">
+                    </div>
+                `;
+            } else if (method === 'stock') {
+                if (modalTargetType === 'logo') {
+                    body.innerHTML = `
+                        <div class="hint-text" style="margin-bottom:12px;">Auto-assigned based on your Provider Type. This cannot be edited.</div>
+                        <div class="preview-box" style="cursor:pointer;" onclick="applyStockLogo()">
+                            <div class="preview-thumb stock-thumb">
+                                <img src="${stockLogoByType[currentProviderType]}" alt="Stock Logo">
+                            </div>
+                            <div class="preview-info">
+                                <div class="preview-name">Logo <span class="preview-badge">STOCK</span></div>
+                                <div class="preview-size">Auto-assigned by Provider Type</div>
+                            </div>
+                            <div style="padding:8px 12px;background:#0078D4;color:white;border-radius:0;font-size:12px;flex-shrink:0;">Apply</div>
+                        </div>
+                    `;
+                } else if (modalTargetType === 'header') {
+                    window.selectedStockHeaderUrl = null;
+                    body.innerHTML = `
+                        <div class="hint-text" style="margin-bottom:12px;">Select a stock photo for your header.</div>
+                        <div class="modal-stock-grid" id="modalStockGrid"></div>
+                        <div class="source-modal-actions" id="sourceModalActions" style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+                            <div class="hint-text" style="margin:0;" id="stockSelectedInfo">No image selected</div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn btn-secondary" onclick="clearStockSelection()">Cancel</button>
+                                <button class="btn btn-primary" id="btnUseStockHeader" onclick="confirmStockHeader()" style="opacity:0.5;pointer-events:none;">Use This Photo</button>
+                            </div>
+                        </div>
+                    `;
+                    const grid = document.getElementById('modalStockGrid');
+                    for (let i = 0; i < 12; i++) {
+                        const item = document.createElement('div');
+                        item.className = 'modal-stock-item';
+                        item.innerHTML = `<img src="${stockImages[i]}" alt="Stock ${i + 1}">`;
+                        item.onclick = () => selectStockHeader(stockImages[i], item);
+                        grid.appendChild(item);
+                    }
+                }
+            } else if (method === 'color') {
+                body.innerHTML = `
+                    <div class="hint-text" style="margin-bottom:12px;">Choose a solid color for the header background.</div>
+                    <div class="color-palette" id="modalColorPalette"></div>
+                `;
+                const palette = document.getElementById('modalColorPalette');
+                allColors.forEach(color => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'color-swatch';
+                    swatch.style.backgroundColor = color.value;
+                    swatch.title = color.name;
+                    if (color.value === '#FFFFFF') swatch.style.border = '1px solid #d9d9d9';
+                    swatch.onclick = () => applyHeaderColor(color.value);
+                    palette.appendChild(swatch);
+                });
+            }
+        }
+
+        function handleModalDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleModalDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleModalDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) processModalFile(files[0]);
+        }
+
+        function handleModalFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) processModalFile(files[0]);
+            e.target.value = '';
+        }
+
+        function processModalFile(file) {
+            if (!file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                const img = new Image();
+                img.onload = async () => {
+                    const config = resolutionConfig[modalTargetType];
+                    let finalDataUrl = dataUrl;
+                    if (img.width > config.maxW || img.height > config.maxH) {
+                        finalDataUrl = await convertToJpg(dataUrl, config.maxW, config.maxH, null);
+                    }
+
+                    imageData[modalTargetType] = {
+                        src: finalDataUrl,
+                        name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                        width: img.width,
+                        height: img.height,
+                        isStock: false,
+                    };
+
+                    closeSourceModal();
+                    renderPreview(modalTargetType);
+                    openCropper(modalTargetType);
+                    if (modalTargetType === 'header') updateCoverFromAuto();
+                };
+                img.src = dataUrl;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyStockLogo() {
+            imageData.logo = {
+                src: stockLogoByType[currentProviderType],
+                name: `stock_logo_${currentProviderType}.jpg`,
+                width: 200,
+                height: 200,
+                isStock: true,
+            };
+            closeSourceModal();
+            renderPreview('logo');
+        }
+
+        function selectStockHeader(url, element) {
+            document.querySelectorAll('.modal-stock-item').forEach(i => i.classList.remove('selected'));
+            element.classList.add('selected');
+            window.selectedStockHeaderUrl = url;
+            document.getElementById('stockSelectedInfo').textContent = 'Image selected';
+            const btn = document.getElementById('btnUseStockHeader');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+
+        function clearStockSelection() {
+            window.selectedStockHeaderUrl = null;
+            document.querySelectorAll('.modal-stock-item').forEach(i => i.classList.remove('selected'));
+            document.getElementById('stockSelectedInfo').textContent = 'No image selected';
+            const btn = document.getElementById('btnUseStockHeader');
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+        }
+
+        function confirmStockHeader() {
+            const url = window.selectedStockHeaderUrl;
+            if (!url) return;
+            
+            const img = new Image();
+            img.onload = () => {
+                imageData.header = {
+                    src: url,
+                    name: `stock_header.jpg`,
+                    width: img.width,
+                    height: img.height,
+                    isStock: true,
+                };
+                closeSourceModal();
+                renderPreview('header');
+                updateCoverFromAuto();
+            };
+            img.src = url;
+        }
+
+        function applyStockHeader(url, element) {
+            document.querySelectorAll('.modal-stock-item').forEach(i => i.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const img = new Image();
+            img.onload = () => {
+                imageData.header = {
+                    src: url,
+                    name: `stock_header.jpg`,
+                    width: img.width,
+                    height: img.height,
+                    isStock: true,
+                };
+                setTimeout(() => {
+                    closeSourceModal();
+                    renderPreview('header');
+                    updateCoverFromAuto();
+                }, 200);
+            };
+            img.src = url;
+        }
+
+        function applyHeaderColor(color) {
+            imageData.headerColor = color;
+            imageData.header = null;
+            closeSourceModal();
+            
+            const container = document.getElementById('headerPreviewContainer');
+            container.innerHTML = `
+                <div class="preview-box">
+                    <div class="preview-thumb">
+                        <div style="width:100%;height:100%;background-color:${color};"></div>
+                    </div>
+                    <div class="preview-info">
+                        <div class="preview-name">Header</div>
+                        <div class="preview-size">Solid Color</div>
+                    </div>
+                    <div class="preview-actions">
+                        <button class="preview-action-btn remove" onclick="removeImage('header')">Remove</button>
+                    </div>
+                </div>
+            `;
+            container.classList.remove('hidden');
+            document.getElementById('headerPlaceholder').classList.add('hidden');
+            updateCoverFromAuto();
+        }
+
+        function validateResolution(img, type) {
+            const config = resolutionConfig[type];
+            if (!config) return { valid: true };
+            const issues = [];
+            if (img.width < config.minW || img.height < config.minH) {
+                issues.push(`Minimum: ${config.minW}x${config.minH}px. Current: ${img.width}x${img.height}px`);
+            }
+            if (img.width > config.maxW || img.height > config.maxH) {
+                issues.push(`Maximum: ${config.maxW}x${config.maxH}px. Will be scaled down.`);
+            }
+            return { valid: issues.length === 0, issues };
+        }
+
+        function convertToJpg(dataUrl, maxWidth, maxHeight, bgColor) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if (w > maxWidth || h > maxHeight) {
+                        const scale = Math.min(maxWidth / w, maxHeight / h);
+                        w = Math.round(w * scale);
+                        h = Math.round(h * scale);
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    if (bgColor) {
+                        ctx.fillStyle = bgColor;
+                        ctx.fillRect(0, 0, w, h);
+                    }
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', 0.9));
+                };
+                img.src = dataUrl;
+            });
+        }
+
+        let tempCropData = null;
+
+        function triggerLogoLocalUpload() {
+            document.getElementById('logoLocalInput').click();
+        }
+
+        function handleLogoLocalUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                tempCropData = { file, dataUrl, type: 'logo' };
+                const img = new Image();
+                img.onload = () => {
+                    cropperState.type = 'logo';
+                    cropperState.imageData = img;
+                    document.getElementById('cropperTitle').textContent = 'Crop Logo Image';
+                    const btnsContainer = document.getElementById('aspectRatioBtns');
+                    btnsContainer.innerHTML = '<button class="crop-ratio-btn active" data-ratio="1">1:1</button>';
+                    document.getElementById('cropperModal').classList.add('active');
+                    setTimeout(() => {
+                        initCropper(img, 1);
+                    }, 50);
+                };
+                img.src = dataUrl;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function applyDefaultStockLogo() {
+            const src = stockLogoByType[currentProviderType];
+            const img = new Image();
+            img.onload = () => {
+                imageData.logo = {
+                    src: src,
+                    name: 'default_logo.svg',
+                    width: img.width,
+                    height: img.height,
+                    isStock: true
+                };
+                renderPreview('logo');
+            };
+            img.src = src;
+        }
+
+        function triggerHeaderLocalUpload() {
+            document.getElementById('headerLocalInput').click();
+        }
+
+        function handleHeaderLocalUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                tempCropData = { file, dataUrl, type: 'header' };
+                const img = new Image();
+                img.onload = () => {
+                    cropperState.type = 'header';
+                    cropperState.imageData = img;
+                    document.getElementById('cropperTitle').textContent = 'Crop Header Image';
+                    const btnsContainer = document.getElementById('aspectRatioBtns');
+                    btnsContainer.innerHTML = '<button class="crop-ratio-btn active" data-ratio="6">6:1</button>';
+                    document.getElementById('cropperModal').classList.add('active');
+                    setTimeout(() => {
+                        initCropper(img, 6);
+                    }, 50);
+                };
+                img.src = dataUrl;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function triggerPhotoLocalUpload() {
+            document.getElementById('photoInput').click();
+        }
+
+        function handlePhotoLocalUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                tempCropData = { file, dataUrl, type: 'photo' };
+                const img = new Image();
+                img.onload = () => {
+                    cropperState.type = 'photo';
+                    cropperState.imageData = img;
+                    document.getElementById('cropperTitle').textContent = 'Crop Photo';
+                    const btnsContainer = document.getElementById('aspectRatioBtns');
+                    btnsContainer.innerHTML = `
+                        <button class="crop-ratio-btn active" data-ratio="${16/9}">16:9</button>
+                        <button class="crop-ratio-btn" data-ratio="${9/16}">9:16</button>
+                        <button class="crop-ratio-btn" data-ratio="1">1:1</button>
+                    `;
+                    document.getElementById('cropperModal').classList.add('active');
+                    setTimeout(() => {
+                        initCropper(img, 16 / 9);
+                    }, 50);
+                };
+                img.src = dataUrl;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function openHeaderStockGallery() {
+            headerGalleryState.selectedUrl = null;
+            renderStockGalleryGrid();
+            document.getElementById('btnUseStockImage').disabled = true;
+            document.getElementById('stockGalleryStatus').textContent = 'Click an image to select it';
+            document.getElementById('headerStockGallery').classList.add('active');
+        }
+
+
+        function closeHeaderStockGallery(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('headerStockGallery').classList.remove('active');
+            headerGalleryState.selectedUrl = null;
+        }
+
+        function closeHeaderStockGalleryDirect() {
+            document.getElementById('headerStockGallery').classList.remove('active');
+            headerGalleryState.selectedUrl = null;
+        }
+
+        function closeHeaderStockGalleryDirect() {
+            document.getElementById('headerStockGallery').classList.remove('active');
+            headerGalleryState.selectedUrl = null;
+        }
+
+        function switchStockCategory(category, btnEl) {
+            headerGalleryState.currentCategory = category;
+            document.querySelectorAll('.stock-tab').forEach(t => t.classList.remove('active'));
+            btnEl.classList.add('active');
+            renderStockGalleryGrid();
+        }
+
+        function filterStockGallery() {
+            headerGalleryState.searchQuery = document.getElementById('stockGallerySearch').value.toLowerCase().trim();
+            renderStockGalleryGrid();
+        }
+
+        function renderStockGalleryGrid() {
+            const grid = document.getElementById('stockGalleryGrid');
+            grid.innerHTML = '';
+            stockGalleryData.forEach((item) => {
+                const el = document.createElement('div');
+                el.className = 'stock-gallery-item' + (item.src === headerGalleryState.selectedUrl ? ' selected' : '');
+                el.innerHTML = `
+                    <img src="${item.src}" alt="${item.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22><rect fill=%22%23e0e0e0%22 width=%22200%22 height=%22100%22/><text x=%22100%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%239e9e9e%22 font-size=%2214%22>Image</text></svg>'">
+                    <div class="stock-gallery-item-label">${item.name}</div>
+                `;
+                el.onclick = () => selectStockImage(item.src, el);
+                grid.appendChild(el);
+            });
+        }
+
+        function selectStockImage(url, element) {
+            document.querySelectorAll('.stock-gallery-item').forEach(i => i.classList.remove('selected'));
+            element.classList.add('selected');
+            headerGalleryState.selectedUrl = url;
+            document.getElementById('stockGalleryStatus').textContent = '1 image selected';
+            document.getElementById('btnUseStockImage').disabled = false;
+        }
+
+        function confirmStockImage() {
+            const url = headerGalleryState.selectedUrl;
+            if (!url) return;
+            
+            closeHeaderStockGalleryDirect();
+            
+            const img = new Image();
+            img.onload = () => {
+                imageData.header = {
+                    src: url,
+                    name: 'stock_header.jpg',
+                    width: img.width,
+                    height: img.height,
+                    isStock: true,
+                };
+                renderPreview('header');
+            };
+            img.onerror = () => {
+                imageData.header = {
+                    src: url,
+                    name: 'stock_header.jpg',
+                    width: 1280,
+                    height: 853,
+                    isStock: true,
+                };
+                renderPreview('header');
+            };
+            img.src = url;
+        }
+
+        function handleFileSelect(e, type) {
+            const files = e.target.files;
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) continue;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const dataUrl = ev.target.result;
+                    tempCropData = { file, dataUrl, type: 'photo' };
+                    const img = new Image();
+                    img.onload = () => {
+                        cropperState.type = 'photo';
+                        cropperState.imageData = img;
+                        cropperState.defaultRatio = 16/9;
+                        document.getElementById('cropperModal').classList.add('active');
+                        setTimeout(() => {
+                            initCropper(img, 16/9);
+                        }, 50);
+                    };
+                    img.src = dataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        }
+
+        function renderPreview(type) {
+            const data = imageData[type];
+            if (!data) return;
+
+            const placeholderBox = document.querySelector(`#${type}Section .upload-placeholder-box`);
+
+            if (placeholderBox) {
+                placeholderBox.classList.add('has-image');
+                placeholderBox.innerHTML = `<img src="${data.src}" alt="${type}">`;
+                placeholderBox.onclick = null;
+            }
+        }
+
+        function renderPhotoGrid() {
+            const grid = document.getElementById('photoGrid');
+            const uploadSelector = document.getElementById('photoUploadSelector');
+
+            if (imageData.photos.length > 0) {
+                if (uploadSelector) {
+                    uploadSelector.classList.add('hidden');
+                }
+            } else {
+                if (uploadSelector) {
+                    uploadSelector.classList.remove('hidden');
+                }
+            }
+
+            grid.innerHTML = '';
+            imageData.photos.forEach((photo, index) => {
+                const item = document.createElement('div');
+                item.className = 'photo-item' + (index === 0 ? ' cover' : '');
+                item.draggable = true;
+                item.dataset.index = index;
+                item.innerHTML = `
+                    ${index === 0 ? '<div class="photo-cover-badge">COVER</div>' : ''}
+                    <img src="${photo.src}" alt="Photo ${index + 1}">
+                    <button class="photo-remove-btn" onclick="removePhoto(${index})">&times;</button>
+                    <div class="photo-index">${index + 1}</div>
+                `;
+                item.addEventListener('dragstart', handlePhotoDragStart);
+                item.addEventListener('dragend', handlePhotoDragEnd);
+                item.addEventListener('dragover', handlePhotoDragOver);
+                item.addEventListener('dragenter', handlePhotoDragEnter);
+                item.addEventListener('dragleave', handlePhotoDragLeave);
+                item.addEventListener('drop', handlePhotoDrop);
+                grid.appendChild(item);
+            });
+
+            const addBox = document.createElement('div');
+            addBox.className = 'upload-placeholder-box';
+            addBox.style.width = '100px';
+            addBox.style.height = '80px';
+            addBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+            addBox.onclick = triggerPhotoLocalUpload;
+            grid.appendChild(addBox);
+        }
+
+        function updateCoverFromAuto() {
+            const coverPreviewEl = document.getElementById('coverPreviewContainer');
+            const placeholderBox = document.querySelector('#coverImageSection .upload-placeholder-box');
+
+            coverPreviewEl.classList.add('hidden');
+            coverPreviewEl.innerHTML = '';
+
+            if (imageData.photos.length > 0) {
+                imageData.coverSource = 'auto-photos';
+                imageData.cover = { src: imageData.photos[0].src, name: imageData.photos[0].name, width: imageData.photos[0].width, height: imageData.photos[0].height };
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                    placeholderBox.onclick = null;
+                }
+            } else if (imageData.header) {
+                imageData.coverSource = 'auto-header';
+                imageData.cover = { src: imageData.header.src, name: imageData.header.name, width: imageData.header.width, height: imageData.header.height };
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                    placeholderBox.onclick = null;
+                }
+            } else if (imageData.headerColor) {
+                imageData.coverSource = 'auto-header-color';
+                imageData.cover = { src: null, color: imageData.headerColor };
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<div style="width:100%;height:100%;background-color:${imageData.headerColor};"></div>`;
+                    placeholderBox.onclick = null;
+                }
+            } else {
+                imageData.coverSource = 'none';
+                imageData.cover = null;
+                if (placeholderBox) {
+                    placeholderBox.classList.remove('has-image');
+                    placeholderBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+                    placeholderBox.onclick = openCoverUpload;
+                }
+            }
+        }
+
+        function renderCoverPreview() {
+            const placeholderBox = document.querySelector('#coverImageSection .upload-placeholder-box');
+
+            if (!imageData.cover) return;
+
+            if (placeholderBox) {
+                placeholderBox.classList.add('has-image');
+
+                if (imageData.cover.color) {
+                    placeholderBox.innerHTML = `<div style="width:100%;height:100%;background-color:${imageData.cover.color};"></div>`;
+                } else {
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                }
+                placeholderBox.onclick = null;
+            }
+        }
+
+        let dragSrcIndex = null;
+
+        function handlePhotoDragStart(e) {
+            dragSrcIndex = parseInt(this.dataset.index);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handlePhotoDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.photo-item').forEach(item => item.classList.remove('drag-over'));
+        }
+
+        function handlePhotoDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handlePhotoDragEnter(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        }
+
+        function handlePhotoDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handlePhotoDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            const dropIndex = parseInt(this.dataset.index);
+            if (dragSrcIndex !== null && dragSrcIndex !== dropIndex) {
+                const draggedPhoto = imageData.photos.splice(dragSrcIndex, 1)[0];
+                imageData.photos.splice(dropIndex, 0, draggedPhoto);
+                renderPhotoGrid();
+                updateCoverFromAuto();
+            }
+        }
+
+        function removePhoto(index) {
+            imageData.photos.splice(index, 1);
+            renderPhotoGrid();
+            updateCoverFromAuto();
+        }
+
+        function removeImage(type) {
+            imageData[type] = null;
+            const container = document.getElementById(`${type}PreviewContainer`);
+            if (container) {
+                container.classList.add('hidden');
+                container.innerHTML = '';
+            }
+
+            const placeholderBox = document.querySelector(`#${type}Section .upload-placeholder-box`);
+            if (placeholderBox) {
+                placeholderBox.classList.remove('has-image');
+                placeholderBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+                
+                if (type === 'logo') {
+                    placeholderBox.onclick = triggerLogoLocalUpload;
+                } else if (type === 'header') {
+                    placeholderBox.onclick = triggerHeaderLocalUpload;
+                } else if (type === 'photo') {
+                    placeholderBox.onclick = triggerPhotoLocalUpload;
+                } else if (type === 'cover') {
+                    placeholderBox.onclick = openCoverUpload;
+                }
+            }
+
+            const iconEl = document.querySelector(`#${type}Section .form-image-right .zmdi`);
+            if (iconEl) {
+                iconEl.className = 'zmdi zmdi-upload';
+                iconEl.style.color = '#757575';
+            }
+            if (type === 'header') updateCoverFromAuto();
+        }
+
+        function replaceImage(type) {
+            openSourceModal(type);
+        }
+
+        function openCropper(type) {
+            const data = imageData[type];
+            if (!data || data.isStock) return;
+
+            cropperState.type = type;
+            
+            const titleMap = { logo: 'Crop Logo Image', header: 'Crop Header Image', photo: 'Crop Photo', cover: 'Crop Cover Image' };
+            document.getElementById('cropperTitle').textContent = titleMap[type] || 'Crop Image';
+            
+            // Render aspect ratio buttons based on image type
+            const config = aspectRatioConfig[type] || aspectRatioConfig.photo;
+            const btnsContainer = document.getElementById('aspectRatioBtns');
+            btnsContainer.innerHTML = '';
+            config.ratios.forEach((ratio, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'crop-ratio-btn' + (index === 0 ? ' active' : '');
+                btn.setAttribute('data-ratio', ratio);
+                btn.textContent = config.labels[index];
+                btn.onclick = function() { setAspectRatio(ratio, this); };
+                btnsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('cropperModal').classList.add('active');
+            
+            const img = new Image();
+            img.onload = () => {
+                setTimeout(() => {
+                    initCropper(img, config.default);
+                }, 100);
+            };
+            img.src = data.src;
+            cropperState.imageData = img;
+        }
+
+        function closeCropper() {
+            document.getElementById('cropperModal').classList.remove('active');
+            if (cropperState.cropperInstance) {
+                cropperState.cropperInstance.destroy();
+                cropperState.cropperInstance = null;
+            }
+            cropperState.type = null;
+            cropperState.imageData = null;
+            
+            const previewImg = document.getElementById('cropperPreviewImage');
+            if (previewImg) {
+                previewImg.src = '';
+            }
+            document.getElementById('cropperPreviewDims').textContent = '';
+        }
+
+        function setAspectRatio(ratio, btnEl) {
+            document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            
+            if (cropperState.cropperInstance) {
+                if (isNaN(ratio)) {
+                    cropperState.cropperInstance.setAspectRatio(NaN);
+                } else {
+                    cropperState.cropperInstance.setAspectRatio(ratio);
+                }
+            }
+        }
+
+        function zoomCropper(delta) {
+            if (cropperState.cropperInstance) {
+                cropperState.cropperInstance.zoom(delta);
+            }
+        }
+
+        function rotateCropper(degrees) {
+            if (cropperState.cropperInstance) {
+                cropperState.cropperInstance.rotate(degrees);
+            }
+        }
+
+        function resetCropper() {
+            if (cropperState.cropperInstance) {
+                cropperState.cropperInstance.reset();
+            }
+        }
+
+        function initCropper(image, defaultRatio) {
+            const cropperImage = document.getElementById('cropperImage');
+            cropperImage.src = image.src;
+            
+            setTimeout(() => {
+                if (cropperState.cropperInstance) {
+                    cropperState.cropperInstance.destroy();
+                }
+                
+                cropperState.cropperInstance = new Cropper(cropperImage, {
+                    aspectRatio: defaultRatio,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.8,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                    ready: function() {},
+                    crop: function(event) {}
+                });
+            }, 50);
+        }
+
+        async function applyCrop() {
+            if (!cropperState.cropperInstance) {
+                alert('Cropper not ready. Please wait a moment.');
+                return;
+            }
+            
+            const type = cropperState.type;
+            const config = resolutionConfig[type];
+            
+            // Get cropped canvas with max dimensions
+            const canvas = cropperState.cropperInstance.getCroppedCanvas({
+                maxWidth: config.maxW || 2000,
+                maxHeight: config.maxH || 2000,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+            
+            if (!canvas) {
+                alert('Crop failed. Please try again.');
+                return;
+            }
+            
+            const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            if (type === 'photo') {
+                const file = tempCropData.file;
+                imageData.photos.push({
+                    src: croppedDataUrl,
+                    name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                    width: width,
+                    height: height,
+                });
+                renderPhotoGrid();
+                updateCoverFromAuto();
+            } else if (type === 'cover') {
+                imageData.cover = {
+                    src: croppedDataUrl,
+                    name: 'cover.jpg',
+                    width: width,
+                    height: height,
+                };
+                imageData.coverSource = 'manual';
+                renderCoverPreview();
+            } else {
+                imageData[type] = { 
+                    src: croppedDataUrl, 
+                    name: `cropped_${type}.jpg`, 
+                    width: width, 
+                    height: height 
+                };
+                renderPreview(type);
+                if (type === 'header') updateCoverFromAuto();
+            }
+            
+            tempCropData = null;
+            closeCropper();
+        }
+
+        function handleCoverManualUpload(e) {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                tempCropData = { file, dataUrl, type: 'cover' };
+                const img = new Image();
+                img.onload = () => {
+                    cropperState.type = 'cover';
+                    cropperState.imageData = img;
+                    document.getElementById('cropperModal').classList.add('active');
+                    setTimeout(() => {
+                        initCropper(img, 16/9);
+                    }, 50);
+                };
+                img.src = dataUrl;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        function resetCoverToAuto() {
+            imageData.cover = null;
+            imageData.coverSource = 'auto';
+            document.getElementById('coverPreviewContainer').classList.add('hidden');
+            document.getElementById('coverPreviewContainer').innerHTML = '';
+            updateCoverFromAuto();
+        }
+
+        function saveProfile() {
+            const data = {
+                logo: imageData.logo,
+                header: imageData.header,
+                headerColor: imageData.headerColor,
+                photos: imageData.photos,
+                cover: imageData.cover,
+                coverSource: imageData.coverSource,
+            };
+            console.log('Saving profile data:', data);
+            alert('Profile saved successfully!');
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                location.reload();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
