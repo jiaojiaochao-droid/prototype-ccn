@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Submission - MyCareConnect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #212529;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header Bar */
+        .top-header-bar {
+            background: #00897b;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-header-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .top-header-dev {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+        }
+
+        /* Main Header */
+        .header {
+            background: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #37474f;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 12px 16px 8px;
+            color: #78909c;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            color: #00897b;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #00897b;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dropdown-arrow {
+            color: #78909c;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .header-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Main Layout */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Collapse Button */
+        .collapse-button-wrapper {
+            position: absolute;
+            left: 240px;
+            top: 20px;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .collapse-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #757575;
+        }
+
+        .collapse-button:hover {
+            background: #f5f5f5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #333;
+        }
+
+        .collapse-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .sidebar-item-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            cursor: inherit;
+        }
+
+        .sidebar-item.active {
+            background-color: #e8f5e9;
+            color: #00897b;
+            font-weight: 500;
+            border-left: 4px solid #00897b;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #006666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .breadcrumb-separator {
+            color: #757575;
+        }
+
+        /* Page Header */
+        .page-header {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #757575;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #263238;
+        }
+
+        .page-title p {
+            color: #757575;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .submission-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submission-status-label {
+            color: #757575;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid #90caf9;
+        }
+
+        .status-badge.not-ready {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+
+        /* Child Info Card */
+        .child-info-card {
+            background-color: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .child-info h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #263238;
+        }
+
+        .child-details {
+            color: #757575;
+            font-size: 13px;
+        }
+
+        .child-details span {
+            margin-right: 24px;
+        }
+
+        .fee-section {
+            display: flex;
+            gap: 60px;
+            align-items: flex-end;
+        }
+
+        .fee-item {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .fee-label {
+            font-size: 13px;
+            color: #757575;
+            margin-top: 4px;
+        }
+
+        .fee-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263238;
+        }
+
+        .btn-edit {
+            background: none;
+            border: none;
+            color: #757575;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 0;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover {
+            color: #00897b;
+        }
+
+        /* Attendance Summary */
+        .attendance-summary {
+            background-color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge.attended {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .badge.absent {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+
+        .badge.incomplete {
+            background-color: #f5f5f5;
+            color: #595959;
+            border: 1px solid #d9d9d9;
+        }
+
+
+
+        .btn-batch {
+            background-color: white;
+            border: 1px solid #d9d9d9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #757575;
+            transition: all 0.2s;
+        }
+
+        .btn-batch:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        /* Calendar */
+        .calendar-container {
+            background-color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #d9d9d9;
+            background-color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .calendar-nav-btn:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        .calendar-month {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: #8c8c8c;
+            padding: 8px 4px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+            font-size: 14px;
+            color: #262626;
+            padding: 8px;
+        }
+
+        .day-number {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .attendance-status {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .attendance-hours {
+            font-size: 11px;
+            color: #52c41a;
+            margin-top: 2px;
+        }
+
+        .calendar-day:hover {
+            border-color: #00897b;
+            background-color: #e6f7ff;
+            color: #00897b;
+        }
+
+        .calendar-day.empty {
+            border: none;
+            cursor: default;
+            background-color: transparent;
+            visibility: hidden;
+        }
+
+        .calendar-day.empty:hover {
+            background-color: transparent;
+        }
+
+        .calendar-day.attended {
+            background-color: #f6ffed;
+            border-color: #b7eb8f;
+        }
+
+        .calendar-day.attended .attendance-status {
+            color: #52c41a;
+        }
+
+        .calendar-day.absent {
+            background-color: #fff2f0;
+            border-color: #ffccc7;
+        }
+
+        .calendar-day.absent .attendance-status {
+            color: #ff4d4f;
+        }
+
+        .calendar-day.incomplete {
+            background-color: #d9d9d9;
+            border-color: #fafafa;
+        }
+
+        .calendar-day.incomplete .attendance-status {
+            color: #000000d9;
+        }
+
+
+
+        .calendar-day.weekend {
+            background-color: #f5f5f5;
+            opacity: 0.6;
+        }
+
+        /* Attachments */
+        .attachments-card {
+            background-color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+        }
+
+        .attachments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .attachments-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+        }
+
+        .btn-upload {
+            background-color: white;
+            border: 1px solid #d9d9d9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #757575;
+            transition: all 0.2s;
+        }
+
+        .btn-upload:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        .attachments-content {
+            text-align: center;
+            color: #8c8c8c;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .attachments-content p {
+            margin: 4px 0;
+        }
+
+        .attachments-content .highlight {
+            color: #262626;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* Footer Buttons */
+        .footer-buttons {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 16px;
+        }
+
+        /* Copyright */
+        .copyright {
+            text-align: left;
+            font-size: 12px;
+            color: #8c8c8c;
+            padding: 8px 0;
+        }
+
+        .copyright a {
+            color: #00897b;
+            text-decoration: none;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 1px solid #d9d9d9;
+            color: #757575;
+        }
+
+        .btn-secondary:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        .btn-primary {
+            background-color: white;
+            border: 1px solid #d9d9d9;
+            color: #757575;
+        }
+
+        .btn-primary:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #8c8c8c;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #262626;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-description {
+            color: #595959;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Warning Alert */
+        .warning-alert {
+            background-color: #fff7e6;
+            border: 1px solid #ffd591;
+            border-left: 4px solid #fa8c16;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .warning-icon {
+            font-size: 20px;
+            color: #fa8c16;
+            margin-top: 2px;
+        }
+
+        .warning-content {
+            flex: 1;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #d46b08;
+            margin-bottom: 4px;
+        }
+
+        .warning-text {
+            color: #595959;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .site-selector {
+            margin-bottom: 20px;
+        }
+
+        .site-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .site-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #262626;
+            background: white;
+            cursor: pointer;
+        }
+
+        .site-select:focus {
+            outline: none;
+            border-color: #00897b;
+            box-shadow: 0 0 0 2px rgba(0, 137, 123, 0.2);
+        }
+
+        .attendance-summary-section {
+            background: #fafafa;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .summary-section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #595959;
+            margin-bottom: 12px;
+        }
+
+        .summary-badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .summary-badge {
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 8px;
+        }
+
+        .summary-badge.attended {
+            background: #f6ffed;
+        }
+
+        .summary-badge.absent {
+            background: #fff2f0;
+        }
+
+        .summary-badge.incomplete {
+            background: #f5f5f5;
+        }
+
+        .summary-badge.no-signature {
+            background: #f9f0ff;
+        }
+
+        .summary-badge-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .summary-badge.attended .summary-badge-value {
+            color: #52c41a;
+        }
+
+        .summary-badge.absent .summary-badge-value {
+            color: #ff4d4f;
+        }
+
+        .summary-badge.incomplete .summary-badge-value {
+            color: #000000d9;
+        }
+
+        .summary-badge.no-signature .summary-badge-value {
+            color: #ae7fcc;
+        }
+
+        .summary-badge-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .summary-badge.attended .summary-badge-label {
+            color: #52c41a;
+        }
+
+        .summary-badge.absent .summary-badge-label {
+            color: #ff4d4f;
+        }
+
+        .summary-badge.incomplete .summary-badge-label {
+            color: #000000d9;
+        }
+
+        .summary-badge.no-signature .summary-badge-label {
+            color: #ae7fcc;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .btn-modal {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-cancel {
+            background: white;
+            border: 1px solid #d9d9d9;
+            color: #595959;
+        }
+
+        .btn-modal-cancel:hover {
+            color: #00897b;
+            border-color: #00897b;
+        }
+
+        .btn-modal-copy {
+            background: #00897b;
+            border: none;
+            color: white;
+        }
+
+        .btn-modal-copy:hover {
+            background: #00695c;
+        }
+
+        /* Page Footer */
+        .page-footer {
+            padding: 16px 24px;
+            font-size: 12px;
+            color: #9e9e9e;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 24px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .page-footer a {
+            color: #9e9e9e;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .page-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Floating Avatar */
+        .floating-avatar {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Top Header Bar -->
+        <div class="top-header-bar">
+            <span class="top-header-title">CareConnect Provider</span>
+            <span class="top-header-dev">DEV 5.0.0-27</span>
+        </div>
+
+        <!-- Main Header -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <img alt="MyCareConnect" src="../images/ccnlogo.png">
+                    </div>
+                    <span>MyCareConnect</span>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active">Subsidies</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <span class="dropdown-arrow">▼</span>
+                <div class="header-user-avatar">J</div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="app-layout">
+            <!-- Collapse Button -->
+            <div class="collapse-button-wrapper">
+                <button class="collapse-button">
+                    <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="left" aria-hidden="true">
+                        <path d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <div class="sidebar-icon">
+                            <img alt="My Connections" src="../images/myconnection.png">
+                        </div>
+                        <span>My Connections</span>
+                    </li>
+                    <li class="sidebar-item active">
+                        <div class="sidebar-icon">
+                            <img alt="Claim & Timesheets" src="../images/cliam.png">
+                        </div>
+                        <span>Claim & Timesheets</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <div class="sidebar-icon">
+                            <img alt="Expiration of Payments" src="../images/eop.png">
+                        </div>
+                        <span>Expiration of Payments</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <div class="sidebar-icon">
+                            <img alt="Documents" src="../images/document.png">
+                        </div>
+                        <span>Documents</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <div class="sidebar-icon">
+                            <img alt="Students" src="../images/student.png">
+                        </div>
+                        <span>Students</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="shareduser.html" class="sidebar-item-link">
+                            <div class="sidebar-icon">
+                                <img alt="Account Info" src="../images/account.png">
+                            </div>
+                            <span>Account Info</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Content -->
+            <main class="content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <span>CADemo</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>CC4NewProvider2</span>
+                </div>
+                
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <button class="back-btn">
+                            <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="left" aria-hidden="true">
+                                <path d="M872 474H286.9l350.2-304c5.6-4.9 2.2-14-5.2-14h-88.5c-3.9 0-7.6 1.4-10.5 3.9L155 487.8a31.96 31.96 0 000 48.3L535.1 866c1.5 1.3 3.3 2 5.2 2h91.5c7.4 0 10.8-9.2 5.2-14L286.9 550H872c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8z"></path>
+                            </svg>
+                        </button>
+                        <div>
+                            <h1>Attendance Submission</h1>
+                            <p>Yoyo Chao - Mar 2026</p>
+                        </div>
+                    </div>
+                    <div class="submission-status">
+                        <span class="submission-status-label">Submission Status:</span>
+                        <span class="status-badge not-ready">Not Ready</span>
+                    </div>
+                </div>
+
+                <!-- Child Info Card -->
+                <div class="child-info-card">
+                    <div class="child-info">
+                        <h2>Yoyo Chao</h2>
+                        <div class="child-details">
+                            <span>DOB: 07/11/2024</span>
+                            <span>Claims: 34462 / CA4P</span>
+                            <span>Status: New</span>
+                        </div>
+                    </div>
+                    <div class="fee-section">
+                        <div class="fee-item">
+                            <div class="fee-value">$0.00</div>
+                            <div class="fee-label">Total Invoice</div>
+                        </div>
+                        <div class="fee-item">
+                            <div class="fee-value">-</div>
+                            <div class="fee-label">Family Fee</div>
+                        </div>
+                        <div class="fee-item">
+                            <div class="fee-value">-</div>
+                            <div class="fee-label">Other Fee</div>
+                        </div>
+                        <button class="btn-edit">
+                            <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="edit" aria-hidden="true" style="width: 16px; height: 16px;">
+                                <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Attendance Summary -->
+                <div class="attendance-summary">
+                    <div class="summary-badges">
+                        <div class="badge attended">
+                            <span>Attended:</span>
+                            <span>0</span>
+                        </div>
+                        <div class="badge absent">
+                            <span>Absent:</span>
+                            <span>0</span>
+                        </div>
+                        <div class="badge incomplete">
+                            <span>Incomplete:</span>
+                            <span>0</span>
+                        </div>
+
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-batch" onclick="openSyncModal()">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="2" width="1em" height="1em" data-icon="sync" aria-hidden="true" style="width: 14px; height: 14px;">
+                                <rect x="3" y="3" width="12" height="12" rx="1"></rect>
+                                <rect x="9" y="9" width="12" height="12" rx="1"></rect>
+                            </svg>
+                            Sync Daily Attendance
+                        </button>
+                        <button class="btn-batch">
+                            <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="edit" aria-hidden="true" style="width: 14px; height: 14px;">
+                                <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path>
+                            </svg>
+                            Batch Attendance
+                        </button>
+                        <button class="btn-batch" onclick="clearAttendance()">
+                            <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="delete" aria-hidden="true" style="width: 14px; height: 14px;">
+                                <path d="M864 256H736v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM304 256h416v-72c0-17.7-14.3-32-32-32H336c-17.7 0-32 14.3-32 32v72z"></path>
+                            </svg>
+                            Clear Attendance
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar -->
+                <div class="calendar-container">
+                    <div class="calendar-weekdays">
+                        <div class="calendar-weekday">Sun</div>
+                        <div class="calendar-weekday">Mon</div>
+                        <div class="calendar-weekday">Tue</div>
+                        <div class="calendar-weekday">Wed</div>
+                        <div class="calendar-weekday">Thu</div>
+                        <div class="calendar-weekday">Fri</div>
+                        <div class="calendar-weekday">Sat</div>
+                    </div>
+
+                    <div class="calendar-days">
+                        <div class="calendar-day empty"></div>
+                        <div class="calendar-day empty"></div>
+                        <div class="calendar-day empty"></div>
+                        <div class="calendar-day" data-day="1"><span class="day-number">1</span></div>
+                        <div class="calendar-day" data-day="2"><span class="day-number">2</span></div>
+                        <div class="calendar-day" data-day="3"><span class="day-number">3</span></div>
+                        <div class="calendar-day weekend" data-day="4"><span class="day-number">4</span></div>
+                        
+                        <div class="calendar-day weekend" data-day="5"><span class="day-number">5</span></div>
+                        <div class="calendar-day" data-day="6"><span class="day-number">6</span></div>
+                        <div class="calendar-day" data-day="7"><span class="day-number">7</span></div>
+                        <div class="calendar-day" data-day="8"><span class="day-number">8</span></div>
+                        <div class="calendar-day" data-day="9"><span class="day-number">9</span></div>
+                        <div class="calendar-day" data-day="10"><span class="day-number">10</span></div>
+                        <div class="calendar-day weekend" data-day="11"><span class="day-number">11</span></div>
+                        
+                        <div class="calendar-day weekend" data-day="12"><span class="day-number">12</span></div>
+                        <div class="calendar-day" data-day="13"><span class="day-number">13</span></div>
+                        <div class="calendar-day" data-day="14"><span class="day-number">14</span></div>
+                        <div class="calendar-day" data-day="15"><span class="day-number">15</span></div>
+                        <div class="calendar-day" data-day="16"><span class="day-number">16</span></div>
+                        <div class="calendar-day" data-day="17"><span class="day-number">17</span></div>
+                        <div class="calendar-day weekend" data-day="18"><span class="day-number">18</span></div>
+                        
+                        <div class="calendar-day weekend" data-day="19"><span class="day-number">19</span></div>
+                        <div class="calendar-day" data-day="20"><span class="day-number">20</span></div>
+                        <div class="calendar-day" data-day="21"><span class="day-number">21</span></div>
+                        <div class="calendar-day" data-day="22"><span class="day-number">22</span></div>
+                        <div class="calendar-day" data-day="23"><span class="day-number">23</span></div>
+                        <div class="calendar-day" data-day="24"><span class="day-number">24</span></div>
+                        <div class="calendar-day weekend" data-day="25"><span class="day-number">25</span></div>
+                        
+                        <div class="calendar-day weekend" data-day="26"><span class="day-number">26</span></div>
+                        <div class="calendar-day" data-day="27"><span class="day-number">27</span></div>
+                        <div class="calendar-day" data-day="28"><span class="day-number">28</span></div>
+                        <div class="calendar-day" data-day="29"><span class="day-number">29</span></div>
+                        <div class="calendar-day" data-day="30"><span class="day-number">30</span></div>
+                        <div class="calendar-day" data-day="31"><span class="day-number">31</span></div>
+                        <div class="calendar-day empty"></div>
+                    </div>
+                </div>
+
+                <!-- Attachments -->
+                <div class="attachments-card">
+                    <div class="attachments-header">
+                        <span class="attachments-title">Attachments</span>
+                        <button class="btn-upload">
+                            <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="upload" aria-hidden="true" style="width: 14px; height: 14px;">
+                                <path d="M400 317.7h73.9V656c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V317.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 163a8 8 0 00-12.6 0l-112 141.8c-4.1 5.2-.4 12.9 6.3 12.9zM128 688h80.1c4.4 0 8 3.6 8 8v160h576v-160c0-4.4 3.6-8 8-8H896c4.4 0 8 3.6 8 8v176c0 17.7-14.3 32-32 32H152c-17.7 0-32-14.3-32-32v-176c0-4.4 3.6-8 8-8z"></path>
+                            </svg>
+                            Upload
+                        </button>
+                    </div>
+                    <div class="attachments-content">
+                        <p>No attachments uploaded</p>
+                        <p>File allowed: <span class="highlight">jpg, png, pdf</span></p>
+                        <p>Maximum file size: <span class="highlight">5 MB</span></p>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="footer-buttons">
+                    <button class="btn btn-secondary">Back</button>
+                    <button class="btn btn-secondary">
+                        <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="eye" aria-hidden="true" style="width: 14px; height: 14px;">
+                            <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.2-3.9 7.9-3.9 16.9 0 24.8C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.2 3.9-7.9 3.9-16.9 0-24.8zM512 762c-156.1 0-275.7-77.3-348.7-207.4C236.3 417.3 355.9 340 512 340c156.1 0 275.7 77.3 348.7 207.4-73 130.1-192.6 207.6-348.7 207.6z m0-340c-73.4 0-133 59.6-133 133s59.6 133 133 133 133-59.6 133-133-59.6-133-133-133z m0 200c-37 0-67-30-67-67s30-67 67-67 67 30 67 67-30 67-67 67z"></path>
+                        </svg>
+                        View Logs
+                    </button>
+                    <button class="btn btn-primary">
+                        <svg viewBox="0 0 1024 1024" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="download" aria-hidden="true" style="width: 14px; height: 14px;">
+                            <path d="M512 648a31.97 31.97 0 0022.6 9.4h.2c8.5 0 16.7-3.4 22.8-9.5l164-164.1c4.3-4.3 6.6-10.2 6.6-16.3 0-12.5-10.1-22.6-22.6-22.6-6.1 0-12 2.3-16.3 6.6L544 543.4V160c0-13.3-10.7-24-24-24s-24 10.7-24 24v383.4L357.3 441.5a22.56 22.56 0 00-16.3-6.6c-12.5 0-22.6 10.1-22.6 22.6 0 6.1 2.3 12 6.6 16.3l164 164.1zM880 848H144c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32z"></path>
+                        </svg>
+                        Download
+                    </button>
+                </div>
+
+                <!-- Copyright -->
+                <div class="copyright">
+                    Copyright © 2026 <a href="#">MCT Technology Inc.</a> All rights reserved. 4.2.2603-50
+                </div>
+            </main>
+        </div>
+
+        <!-- Page Footer -->
+        <footer class="page-footer">
+            <a href="#">
+                <span>🌐</span>
+                <span>便图</span>
+            </a>
+            <a href="#">
+                <span>便图</span>
+                <span>便图</span>
+            </a>
+        </footer>
+
+        <!-- Floating Avatar -->
+        <div class="floating-avatar">J</div>
+
+        <!-- Sync Daily Attendance Modal -->
+        <div class="modal-overlay" id="syncModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 class="modal-title">Sync Daily Attendance</h3>
+                    <button class="modal-close" onclick="closeSyncModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-description">
+                        Please confirm you want to sync this child's daily attendance records for the month.
+                    </p>
+                    
+                    <div class="warning-alert">
+                        <div class="warning-icon">⚠️</div>
+                        <div class="warning-content">
+                            <div class="warning-title">Important notes after confirmation:</div>
+                            <div class="warning-text">
+                                • Existing attendance submission data for this month will be overwritten.<br>
+                                • Attendance submission cannot be edited after syncing; edits require clearing the attendance data first.<br>
+                                • Any later attendance updates on this page will not automatically sync back to this child's daily attendance records.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="site-selector">
+                        <label class="site-label">Select Site:</label>
+                        <select class="site-select" id="siteSelect" onchange="updateSiteData()">
+                            <option value="sunnydale">Sunnydale Preschool</option>
+                            <option value="oakridge">Oakridge Childcare Center</option>
+                        </select>
+                    </div>
+                    <div class="attendance-summary-section">
+                        <div class="summary-section-title" id="summaryTitle">Lucas CA - March 2026 Attendance Summary</div>
+                        <div class="summary-badges-grid">
+                            <div class="summary-badge attended">
+                                <div class="summary-badge-value" id="attendedValue">28</div>
+                                <div class="summary-badge-label">Attended</div>
+                            </div>
+                            <div class="summary-badge absent">
+                                <div class="summary-badge-value" id="absentValue">3</div>
+                                <div class="summary-badge-label">Absent</div>
+                            </div>
+                            <div class="summary-badge incomplete">
+                                <div class="summary-badge-value" id="incompleteValue">0</div>
+                                <div class="summary-badge-label">Incomplete</div>
+                            </div>
+                            <div class="summary-badge no-signature">
+                                <div class="summary-badge-value" id="noSignatureValue">0</div>
+                                <div class="summary-badge-label">No Signature</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-modal btn-modal-cancel" onclick="closeSyncModal()">Cancel</button>
+                    <button class="btn-modal btn-modal-copy" onclick="confirmAndUpdateCalendar()">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear Attendance Confirmation Modal -->
+        <div class="modal-overlay" id="clearAttendanceModal">
+            <div class="modal" style="max-width: 400px; border-radius: 8px;">
+                <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+                    <div style="display: flex; align-items: flex-start; gap: 16px;">
+                        <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="24px" height="24px" style="color: #faad14;">
+                            <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                            <path d="M623.6 316.7C593.6 290.4 554 276 512 276s-81.6 14.5-111.6 40.7C369.2 344 352 380.7 352 420v7.6c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V420c0-44.1 43.1-80 96-80s96 35.9 96 80c0 31.1-22 59.6-56.1 72.7-21.2 8.1-39.2 22.3-52.1 40.9-13.1 19-19.9 41.8-19.9 64.9V620c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-22.7a48.3 48.3 0 0130.9-44.8c59-22.7 97.1-74.7 97.1-132.5.1-39.3-17.1-76-48.3-103.3zM472 732a40 40 0 1080 0 40 40 0 10-80 0z"></path>
+                        </svg>
+                        <div style="flex: 1;">
+                            <p style="font-size: 14px; line-height: 1.5; color: #262626; margin: 0;">
+                                Are you sure you want to clear all attendance data?
+                            </p>
+                        </div>
+                        <button class="modal-close" onclick="closeClearAttendanceModal()" style="padding: 0; font-size: 16px;">×</button>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                        <button class="btn-modal btn-modal-cancel" onclick="closeClearAttendanceModal()" style="background: white; border: 1px solid #d9d9d9; color: #595959; padding: 6px 16px;">No</button>
+                        <button class="btn-modal" onclick="confirmClearAttendance()" style="background: #00897b; border: none; color: white; padding: 6px 16px; border-radius: 6px;">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Site data configuration
+        const siteData = {
+            sunnydale: {
+                title: 'Yoyo Chao - March 2026 Attendance Summary',
+                attended: 20,
+                absent: 2,
+                incomplete: 1,
+                noSignature: 0
+            },
+            oakridge: {
+                title: 'Emma Chen - March 2026 Attendance Summary',
+                attended: 18,
+                absent: 3,
+                incomplete: 1,
+                noSignature: 1
+            }
+        };
+
+        function openSyncModal() {
+            document.getElementById('syncModal').classList.add('active');
+            // Initialize with first site
+            updateSiteData();
+        }
+
+        function closeSyncModal() {
+            document.getElementById('syncModal').classList.remove('active');
+        }
+
+        function updateSiteData() {
+            const siteSelect = document.getElementById('siteSelect');
+            const selectedSite = siteSelect.value;
+            const data = siteData[selectedSite];
+
+            document.getElementById('summaryTitle').textContent = data.title;
+            document.getElementById('attendedValue').textContent = data.attended;
+            document.getElementById('absentValue').textContent = data.absent;
+            document.getElementById('incompleteValue').textContent = data.incomplete;
+            document.getElementById('noSignatureValue').textContent = data.noSignature;
+        }
+
+        function confirmAndUpdateCalendar() {
+            const siteSelect = document.getElementById('siteSelect');
+            const selectedSite = siteSelect.value;
+            const data = siteData[selectedSite];
+
+            // Update calendar days based on selected site data
+            const allCalendarDays = document.querySelectorAll('.calendar-day:not(.empty)');
+            const weekendDays = [4, 5, 11, 12, 18, 19, 25, 26];
+            
+            // Sort days by data-day to ensure correct order
+            const calendarDays = Array.from(allCalendarDays).sort((a, b) => {
+                const dayA = parseInt(a.getAttribute('data-day')) || 0;
+                const dayB = parseInt(b.getAttribute('data-day')) || 0;
+                return dayA - dayB;
+            });
+            
+            let attendedCount = 0;
+            let absentCount = 0;
+            let incompleteCount = 0;
+            let noSignatureCount = 0;
+            let currentIndex = 0;
+            
+            // Clear all existing content and classes
+            calendarDays.forEach(day => {
+                day.classList.remove('attended', 'absent', 'incomplete', 'no-signature');
+                const statusEl = day.querySelector('.attendance-status');
+                const hoursEl = day.querySelector('.attendance-hours');
+                if (statusEl) statusEl.remove();
+                if (hoursEl) hoursEl.remove();
+            });
+            
+            // Add Attended to non-weekend days
+            while (attendedCount < data.attended && currentIndex < calendarDays.length) {
+                const day = calendarDays[currentIndex];
+                const dayNum = parseInt(day.getAttribute('data-day'));
+                
+                if (dayNum && !weekendDays.includes(dayNum)) {
+                    day.classList.add('attended');
+                    
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'attendance-status';
+                    statusEl.textContent = 'Attended';
+                    day.appendChild(statusEl);
+                    
+                    const hoursEl = document.createElement('div');
+                    hoursEl.className = 'attendance-hours';
+                    hoursEl.textContent = '6.00h';
+                    day.appendChild(hoursEl);
+                    
+                    attendedCount++;
+                }
+                currentIndex++;
+            }
+            
+            // Add Absent to next non-weekend days
+            while (absentCount < data.absent && currentIndex < calendarDays.length) {
+                const day = calendarDays[currentIndex];
+                const dayNum = parseInt(day.getAttribute('data-day'));
+                
+                if (dayNum && !weekendDays.includes(dayNum)) {
+                    day.classList.add('absent');
+                    
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'attendance-status';
+                    statusEl.textContent = 'Absent';
+                    day.appendChild(statusEl);
+                    
+                    absentCount++;
+                }
+                currentIndex++;
+            }
+
+            // Add Incomplete to next non-weekend days
+            while (incompleteCount < data.incomplete && currentIndex < calendarDays.length) {
+                const day = calendarDays[currentIndex];
+                const dayNum = parseInt(day.getAttribute('data-day'));
+                
+                if (dayNum && !weekendDays.includes(dayNum)) {
+                    day.classList.add('incomplete');
+                    
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'attendance-status';
+                    statusEl.textContent = 'Incomplete';
+                    day.appendChild(statusEl);
+                    
+                    incompleteCount++;
+                }
+                currentIndex++;
+            }
+
+            // Add No Signature to next non-weekend days
+            while (noSignatureCount < data.noSignature && currentIndex < calendarDays.length) {
+                const day = calendarDays[currentIndex];
+                const dayNum = parseInt(day.getAttribute('data-day'));
+                
+                if (dayNum && !weekendDays.includes(dayNum)) {
+                    day.classList.add('no-signature');
+                    
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'attendance-status';
+                    statusEl.textContent = 'No Signature';
+                    day.appendChild(statusEl);
+                    
+                    noSignatureCount++;
+                }
+                currentIndex++;
+            }
+
+            // Update summary badges on page - use actual counted values
+            const summaryBadges = document.querySelectorAll('.attendance-summary .badge');
+            if (summaryBadges.length >= 3) {
+                summaryBadges[0].querySelectorAll('span')[1].textContent = attendedCount;
+                summaryBadges[1].querySelectorAll('span')[1].textContent = absentCount;
+                summaryBadges[2].querySelectorAll('span')[1].textContent = incompleteCount;
+            }
+
+            closeSyncModal();
+        }
+
+        function clearAttendance() {
+            document.getElementById('clearAttendanceModal').classList.add('active');
+        }
+
+        function closeClearAttendanceModal() {
+            document.getElementById('clearAttendanceModal').classList.remove('active');
+        }
+
+        function confirmClearAttendance() {
+            // Get all calendar days
+            const allCalendarDays = document.querySelectorAll('.calendar-day:not(.empty)');
+            
+            // Clear all existing content and classes
+            allCalendarDays.forEach(day => {
+                day.classList.remove('attended', 'absent', 'incomplete', 'no-signature');
+                const statusEl = day.querySelector('.attendance-status');
+                const hoursEl = day.querySelector('.attendance-hours');
+                if (statusEl) statusEl.remove();
+                if (hoursEl) hoursEl.remove();
+            });
+            
+            // Update summary badges to 0
+            const summaryBadges = document.querySelectorAll('.attendance-summary .badge');
+            if (summaryBadges.length >= 3) {
+                summaryBadges[0].querySelectorAll('span')[1].textContent = '0';
+                summaryBadges[1].querySelectorAll('span')[1].textContent = '0';
+                summaryBadges[2].querySelectorAll('span')[1].textContent = '0';
+            }
+            
+            // Close the modal
+            closeClearAttendanceModal();
+        }
+
+        // Close modal when clicking on overlay
+        document.getElementById('syncModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSyncModal();
+            }
+        });
+
+        // Close clear attendance modal when clicking on overlay
+        document.getElementById('clearAttendanceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeClearAttendanceModal();
+            }
+        });
+
+        // Check if all attendance values are zero on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const summaryBadges = document.querySelectorAll('.attendance-summary .badge');
+            if (summaryBadges.length >= 3) {
+                const attended = parseInt(summaryBadges[0].querySelectorAll('span')[1].textContent);
+                const absent = parseInt(summaryBadges[1].querySelectorAll('span')[1].textContent);
+                const incomplete = parseInt(summaryBadges[2].querySelectorAll('span')[1].textContent);
+                
+                if (attended === 0 && absent === 0 && incomplete === 0) {
+                    openSyncModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

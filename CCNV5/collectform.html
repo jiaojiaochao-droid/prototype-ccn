@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCareConnect - Collect Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #e8e8e8;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0000008A;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #595959;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .sidebar-menu-item.active {
+            background: #e6f7f4;
+            color: #009688;
+            border-left: 3px solid #009688;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        /* Top Header Bar */
+        .top-header-bar {
+            background: #00897b;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-header-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .top-header-dev {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+        }
+
+        /* Main Header */
+        .header {
+            background: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #37474f;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 12px 16px 8px;
+            color: #78909c;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            color: #00897b;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #00897b;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dropdown-arrow {
+            color: #78909c;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .header-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .content-main-block {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            line-height: 1.1;
+            color: #929292;
+            padding: 20px;
+            font-weight: 400;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #cfdbe2;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .content-body {
+            padding: 20px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 6px;
+        }
+
+        .required {
+            color: #e53935;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #009688;
+            box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.1);
+        }
+
+        /* Compact Grid Layout */
+        .compact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .compact-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        /* Form Configuration Grid */
+        .form-config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .form-config-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-help-text {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.54);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        /* Site Selection */
+        .site-checkbox-container {
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+        }
+
+        .site-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .site-checkbox-item:last-child {
+            border-bottom: none;
+        }
+
+        .site-checkbox-item:hover {
+            background: #f5f5f5;
+        }
+
+        .site-checkbox-item.selected {
+            background: #e6f7f4;
+        }
+
+        .site-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #009688;
+        }
+
+        .site-info {
+            flex: 1;
+        }
+
+        .site-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .site-provider {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.54);
+        }
+
+        /* Compact Site Selector */
+        .compact-site-selector {
+            position: relative;
+        }
+
+        .site-select-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .site-select-toggle:hover {
+            border-color: #009688;
+        }
+
+        .site-select-toggle.open {
+            border-color: #009688;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 400px;
+        }
+
+        .site-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #e6f7f4;
+            color: #00897b;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .site-tag-close {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .placeholder-text {
+            color: rgba(0, 0, 0, 0.38);
+        }
+
+        .site-dropdown-arrow {
+            color: #78909c;
+            font-size: 16px;
+        }
+
+        .site-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .site-dropdown.open {
+            display: block;
+        }
+
+        .site-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .site-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .site-dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .site-dropdown-item.selected {
+            background: #e6f7f4;
+        }
+
+        .site-dropdown-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #009688;
+            flex-shrink: 0;
+        }
+
+        .site-dropdown-name {
+            flex: 1;
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .site-dropdown-provider {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.54);
+        }
+
+        /* QR Expiry Options */
+        .expiry-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .expiry-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .expiry-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #009688;
+            flex-shrink: 0;
+        }
+
+        .expiry-option label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .expiry-title {
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .expiry-desc {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.54);
+        }
+
+        .custom-expiry {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            align-items: center;
+            margin-left: 24px;
+        }
+
+        .custom-expiry input {
+            width: 70px;
+            padding: 6px 8px;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .custom-expiry select {
+            padding: 6px 8px;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #cfdbe2;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: rgba(0, 0, 0, 0.85);
+            border: 1px solid #cfdbe2;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+            border-color: #bdbdbd;
+        }
+
+        .btn-primary {
+            background: #00897b;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #00695c;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #cfdbe2;
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        /* Standard Collect Form Preview */
+        .standard-form-preview {
+            background: white;
+            border: 1px solid #cfdbe2;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .form-header-banner {
+            background: linear-gradient(to bottom, #c8d8d6, #a8c5c2);
+            height: 140px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 32px 16px;
+        }
+
+        .form-header-icon {
+            width: 100px;
+            height: 100px;
+            background: #d0d0d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: -16px;
+            left: 32px;
+            border-radius: 4px;
+        }
+
+        .form-header-title {
+            margin-left: 130px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #00897b;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .form-body {
+            padding: 32px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 32px;
+        }
+
+        .form-fields-section {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 20px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 14px;
+            color: #424242;
+            margin-bottom: 6px;
+        }
+
+        .form-field label .required {
+            color: #e53935;
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .add-student-btn {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            color: #424242;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .add-student-btn:hover {
+            border-color: #bdbdbd;
+            background: #fafafa;
+        }
+
+        .quick-message-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .quick-tag {
+            padding: 4px 10px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #616161;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .submit-btn button {
+            padding: 8px 20px;
+            background: #00897b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .qr-side-panel {
+            text-align: center;
+        }
+
+        .qr-code-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            background: white;
+            display: inline-block;
+        }
+
+        .qr-code-placeholder {
+            width: 160px;
+            height: 160px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .qr-code-placeholder::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, #616161 25%, transparent 25%),
+                linear-gradient(-45deg, #616161 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #616161 75%),
+                linear-gradient(-45deg, transparent 75%, #616161 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            opacity: 0.6;
+        }
+
+        .qr-caption {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #424242;
+            line-height: 1.5;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        .page-footer {
+            padding: 16px 24px;
+            font-size: 12px;
+            color: #9e9e9e;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .page-footer a {
+            color: #9e9e9e;
+            text-decoration: none;
+        }
+
+        .page-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">Marketing</div>
+        <nav class="sidebar-menu">
+            <div class="sidebar-menu-item active">
+                <div class="sidebar-icon">📝</div>
+                <span>Collect Form</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon">📱</div>
+                <span>QR Codes</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon">📊</div>
+                <span>Analytics</span>
+            </div>
+            <div class="sidebar-menu-item">
+                <div class="sidebar-icon">⚙️</div>
+                <span>Settings</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="content-area">
+        <!-- Top Header Bar -->
+        <div class="top-header-bar">
+            <span class="top-header-title">CareConnect Provider</span>
+            <span class="top-header-dev">DEV 5.0.0-27</span>
+        </div>
+
+        <!-- Main Header -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <img alt="MyCareConnect" src="../images/ccnlogo.png">
+                    </div>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab">Students</button>
+                    <button class="nav-tab">Attendance</button>
+                    <button class="nav-tab">Subsidies</button>
+                    <button class="nav-tab">Messaging</button>
+                    <button class="nav-tab active">Marketing</button>
+                    <button class="nav-tab">Admin</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <span class="dropdown-arrow">▼</span>
+                <div class="header-user-avatar">J</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Setup Section -->
+            <div class="content-main-block">
+                <div class="content-header">
+                    <div class="content-title">Collect Form</div>
+                </div>
+                <div class="content-body">
+                    <!-- Form Title and Tag Row -->
+                    <div class="form-config-grid">
+                        <!-- Form Title -->
+                        <div class="form-group">
+                            <label class="form-label">Form Title <span style="color: rgba(0, 0, 0, 0.38); font-weight: 400;">(Optional)</span></label>
+                            <input type="text" class="form-input" id="formTitle" placeholder="Auto-filled based on sites (editable)">
+                            <p class="form-help-text" id="defaultTitlePreviewText">
+                                Defaults to Organization Name, but you can customize it
+                            </p>
+                        </div>
+
+                        <!-- Form Tag -->
+                        <div class="form-group">
+                            <label class="form-label">Tag <span style="color: rgba(0, 0, 0, 0.38); font-weight: 400;">(Optional)</span></label>
+                            <input type="text" class="form-input" id="formTag" placeholder="Tag to identify this form's source/channel">
+                            <p class="form-help-text">
+                                This tag will be applied to all Leads submitted through this form, helping you track which channel they came from.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Site Selection and QR Expiry Row -->
+                    <div class="form-config-grid">
+                        <!-- Site Selection -->
+                        <div class="form-group">
+                            <label class="form-label">My Preferred Site</label>
+                            <div class="compact-site-selector">
+                                <div class="site-select-toggle" id="siteToggle" onclick="toggleSiteDropdown()">
+                                    <div class="selected-tags" id="selectedTags">
+                                        <span class="placeholder-text">Select sites...</span>
+                                    </div>
+                                    <span class="site-dropdown-arrow">▼</span>
+                                </div>
+                                <div class="site-dropdown" id="siteDropdown">
+                                    <div class="site-dropdown-item" data-site-id="site-1">
+                                        <input type="checkbox" class="site-dropdown-checkbox" id="site-1" data-site-name="An Nur Academy - Main Campus">
+                                        <div class="site-dropdown-name">An Nur Academy - Main Campus</div>
+                                        <div class="site-dropdown-provider">annurmain #211600</div>
+                                    </div>
+                                    <div class="site-dropdown-item" data-site-id="site-2">
+                                        <input type="checkbox" class="site-dropdown-checkbox" id="site-2" data-site-name="An Nur Academy - East Branch">
+                                        <div class="site-dropdown-name">An Nur Academy - East Branch</div>
+                                        <div class="site-dropdown-provider">annureast #211601</div>
+                                    </div>
+                                    <div class="site-dropdown-item" data-site-id="site-3">
+                                        <input type="checkbox" class="site-dropdown-checkbox" id="site-3" data-site-name="An Nur Academy - West Branch">
+                                        <div class="site-dropdown-name">An Nur Academy - West Branch</div>
+                                        <div class="site-dropdown-provider">annurwest #211602</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="form-help-text">
+                                Select the sites that will appear as options in the Collect Form's "My Preferred Site" dropdown when parents submit the form.
+                            </p>
+                        </div>
+
+                        <!-- QR Expiry -->
+                        <div class="form-group">
+                            <label class="form-label">QR Code Expiry</label>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <select class="form-input" id="qrExpirySelect" onchange="handleExpiryChange()" style="flex: 1;">
+                                    <option value="permanent">Permanent (Never expires)</option>
+                                    <option value="1day">1 Day (Expires after 24h)</option>
+                                    <option value="1month">1 Month (Expires after 30d)</option>
+                                    <option value="custom">Custom (Set custom duration)</option>
+                                </select>
+                                <div class="custom-expiry" id="customExpiry" style="display: none; margin-left: 0; margin-top: 0;">
+                                    <input type="number" id="customDuration" min="1" value="1">
+                                    <select id="customUnit">
+                                        <option value="days">Day(s)</option>
+                                        <option value="months">Month(s)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                        <button class="btn btn-primary" onclick="generatePreview()">Preview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section" id="previewSection">
+                <div class="content-main-block">
+                    <div class="content-header">
+                        <div class="content-title">Collect Form</div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="printQR()">Print QR Code</button>
+                            <button class="btn btn-primary" onclick="downloadQR()">Download QR Code</button>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="standard-form-preview">
+                            <div class="form-header-banner">
+                                <div class="form-header-icon">
+                                    <svg viewBox="0 0 24 24" width="50" height="50" fill="#9e9e9e">
+                                        <path d="M19 9.3V4h-3v2.6L12 3 2 12h3v8h5v-6h4v6h5v-8h3l-3-2.7zm-9 .7c0-1.1.9-2 2-2s2 .9 2 2h-4z"/>
+                                    </svg>
+                                </div>
+                                <div class="form-header-title" id="previewFormTitle">SH - Leah test CCN V5 site profile111</div>
+                            </div>
+                            
+                            <div class="form-body">
+                                <div class="form-fields-section">
+                                    <div class="form-row">
+                                        <div class="form-field">
+                                            <label><span class="required">*</span> First Name</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                        <div class="form-field">
+                                            <label><span class="required">*</span> Last Name</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-field">
+                                            <label>Phone Number</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                        <div class="form-field">
+                                            <label><span class="required">*</span> Email</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-field">
+                                            <label>Student First Name</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                        <div class="form-field">
+                                            <label>Student Last Name</label>
+                                            <input type="text" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-field">
+                                            <label>Student Birthday</label>
+                                            <input type="text" placeholder="Select date" readonly>
+                                        </div>
+                                        <div class="form-field">
+                                            <label>Desired Start Date</label>
+                                            <input type="text" placeholder="Select date" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-field">
+                                        <label><span class="required">*</span> My Preferred Site</label>
+                                        <select>
+                                            <option value="">Select a site...</option>
+                                            <option value="site1">An Nur Academy - Main Campus</option>
+                                            <option value="site2">An Nur Academy - East Branch</option>
+                                            <option value="site3">An Nur Academy - West Branch</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <button class="add-student-btn">+ Add another student</button>
+                                    
+                                    <div class="form-field">
+                                        <label>Message</label>
+                                        <textarea readonly></textarea>
+                                        <div style="font-size: 12px; color: #9e9e9e; margin-top: 4px;">Quick Message</div>
+                                        <div class="quick-message-tags">
+                                            <span class="quick-tag">My Preferred Site is</span>
+                                            <span class="quick-tag">Current openings?</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="submit-btn">
+                                        <button>Submit</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="qr-side-panel">
+                                    <div class="qr-code-box">
+                                        <div class="qr-code-placeholder"></div>
+                                    </div>
+                                    <div class="qr-caption">Scan to fill with your own device.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <span class="HIDE-MOBILE">Copyright © </span>2026 
+            <a href="https://www.mcttechnology.com" target="_blank" rel="noopener noreferrer">MCT Technology Inc.</a>
+            <span class="HIDE-MOBILE"> All rights reserved.</span> dev 5.0.0-27
+        </footer>
+    </div>
+
+    <script>
+        const customerName = 'An Nur Academy';
+        const selectedSitesMap = new Map();
+
+        // Toggle site dropdown
+        function toggleSiteDropdown() {
+            const dropdown = document.getElementById('siteDropdown');
+            const toggle = document.getElementById('siteToggle');
+            dropdown.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const selector = document.querySelector('.compact-site-selector');
+            if (selector && !selector.contains(e.target)) {
+                document.getElementById('siteDropdown').classList.remove('open');
+                document.getElementById('siteToggle').classList.remove('open');
+            }
+        });
+
+        // Initialize site dropdown
+        function initializeSiteDropdown() {
+            const dropdownItems = document.querySelectorAll('.site-dropdown-item');
+            dropdownItems.forEach(item => {
+                const checkbox = item.querySelector('.site-dropdown-checkbox');
+                
+                checkbox.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                    updateSiteSelection(item, this);
+                });
+
+                item.addEventListener('click', function(e) {
+                    if (e.target === checkbox) return;
+                    checkbox.checked = !checkbox.checked;
+                    updateSiteSelection(item, checkbox);
+                });
+
+                if (checkbox.checked) {
+                    const siteName = checkbox.dataset.siteName;
+                    selectedSitesMap.set(checkbox.id, siteName);
+                    item.classList.add('selected');
+                }
+            });
+            updateSelectedTags();
+        }
+
+        function updateSiteSelection(item, checkbox) {
+            const siteId = checkbox.id;
+            const siteName = checkbox.dataset.siteName;
+            
+            if (checkbox.checked) {
+                selectedSitesMap.set(siteId, siteName);
+                item.classList.add('selected');
+            } else {
+                selectedSitesMap.delete(siteId);
+                item.classList.remove('selected');
+            }
+            updateSelectedTags();
+        }
+
+        function updateSelectedTags() {
+            const tagsContainer = document.getElementById('selectedTags');
+            tagsContainer.innerHTML = '';
+            
+            if (selectedSitesMap.size === 0) {
+                tagsContainer.innerHTML = '<span class="placeholder-text">Select sites...</span>';
+                updateDefaultTitlePreview();
+                return;
+            }
+            
+            selectedSitesMap.forEach((siteName, siteId) => {
+                const tag = document.createElement('span');
+                tag.className = 'site-tag';
+                tag.innerHTML = `
+                    ${siteName}
+                    <span class="site-tag-close" onclick="removeSite('${siteId}', event)">&times;</span>
+                `;
+                tagsContainer.appendChild(tag);
+            });
+            updateDefaultTitlePreview();
+        }
+
+        function updateDefaultTitlePreview() {
+            const preview = document.getElementById('defaultTitlePreview');
+            const formTitleInput = document.getElementById('formTitle');
+            
+            if (selectedSitesMap.size === 0) {
+                preview.textContent = 'Select sites first';
+                preview.style.color = '#78909c';
+                preview.style.fontWeight = '400';
+            } else if (selectedSitesMap.size === 1) {
+                const firstSiteName = selectedSitesMap.values().next().value;
+                preview.textContent = firstSiteName;
+                preview.style.color = '#00897b';
+                preview.style.fontWeight = '500';
+                if (!formTitleInput.value || formTitleInput.dataset.autoFilled === 'true') {
+                    formTitleInput.value = firstSiteName;
+                    formTitleInput.dataset.autoFilled = 'true';
+                }
+            } else {
+                preview.textContent = customerName;
+                preview.style.color = '#00897b';
+                preview.style.fontWeight = '500';
+                if (!formTitleInput.value || formTitleInput.dataset.autoFilled === 'true') {
+                    formTitleInput.value = customerName;
+                    formTitleInput.dataset.autoFilled = 'true';
+                }
+            }
+        }
+
+        function removeSite(siteId, event) {
+            event.stopPropagation();
+            const radio = document.getElementById(siteId);
+            const item = radio.closest('.site-dropdown-item');
+            radio.checked = false;
+            selectedSitesMap.clear();
+            item.classList.remove('selected');
+            updateSelectedTags();
+        }
+
+        // Handle QR Expiry Change
+        function handleExpiryChange() {
+            const select = document.getElementById('qrExpirySelect');
+            const customExpiry = document.getElementById('customExpiry');
+            
+            if (select.value === 'custom') {
+                customExpiry.style.display = 'flex';
+            } else {
+                customExpiry.style.display = 'none';
+            }
+        }
+
+        // Preview
+        function generatePreview() {
+            const formTitle = document.getElementById('formTitle').value;
+
+            // Determine preview title
+            let previewTitle;
+            if (formTitle) {
+                previewTitle = formTitle;
+            } else if (selectedSitesMap.size === 1) {
+                const firstSiteName = selectedSitesMap.values().next().value;
+                previewTitle = firstSiteName;
+            } else {
+                previewTitle = customerName;
+            }
+
+            // Update preview
+            document.getElementById('previewFormTitle').textContent = previewTitle;
+
+            updatePreviewSiteDropdown();
+
+            // Show preview section
+            document.getElementById('previewSection').classList.add('active');
+            
+            // Scroll to preview
+            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updatePreviewSiteDropdown() {
+            const previewSelect = document.querySelector('.form-fields-section select');
+            if (!previewSelect) return;
+
+            previewSelect.innerHTML = '<option value="">Select a site...</option>';
+
+            selectedSitesMap.forEach((siteName, siteId) => {
+                const option = document.createElement('option');
+                option.value = siteId;
+                option.textContent = siteName;
+                previewSelect.appendChild(option);
+            });
+        }
+
+        function closePreview() {
+            document.getElementById('previewSection').classList.remove('active');
+        }
+
+        function resetForm() {
+            // Clear all radio buttons
+            const radios = document.querySelectorAll('.site-dropdown-radio');
+            radios.forEach(radio => {
+                radio.checked = false;
+                radio.closest('.site-dropdown-item').classList.remove('selected');
+            });
+            selectedSitesMap.clear();
+            updateSelectedTags();
+            updateDefaultTitlePreview();
+
+            // Reset expiry to permanent
+            document.getElementById('qrExpirySelect').value = 'permanent';
+            document.getElementById('customExpiry').style.display = 'none';
+
+            // Clear text inputs
+            const formTitleInput = document.getElementById('formTitle');
+            formTitleInput.value = '';
+            formTitleInput.dataset.autoFilled = 'true';
+            document.getElementById('formTag').value = '';
+
+            // Hide preview
+            closePreview();
+        }
+
+        function downloadQR() {
+            alert('QR Code download started!');
+        }
+
+        function printQR() {
+            alert('Printing QR Code...');
+        }
+
+        function downloadAll() {
+            alert('All files download started!');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSiteDropdown();
+            updateDefaultTitlePreview();
+            
+            // Listen for manual input on form title
+            const formTitleInput = document.getElementById('formTitle');
+            formTitleInput.addEventListener('input', function() {
+                this.dataset.autoFilled = 'false';
+            });
+        });
+    </script>
+</body>
+</html>

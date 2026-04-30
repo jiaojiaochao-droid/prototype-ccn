@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCT | CareConnect Provider</title>
+    <meta name="theme-color" content="#009688">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.6/css/dx.light.css">
+    <style>
+        @charset "UTF-8";
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            -ms-overflow-style: scrollbar;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @-ms-viewport {
+            width: device-width;
+        }
+
+        article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, section {
+            display: block;
+        }
+
+        [tabindex='-1']:focus {
+            outline: 0!important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: rgba(0,0,0,.85);
+            margin-top: 0;
+            margin-bottom: .5rem;
+        }
+
+        address {
+            line-height: inherit;
+        }
+
+        input[type=number], input[type=password], input[type=text], textarea {
+            -webkit-appearance: none;
+        }
+
+        dfn {
+            font-style: italic;
+        }
+
+        a:active {
+            color: #007069;
+        }
+
+        a:active, a:hover {
+            text-decoration: none;
+            outline: 0;
+        }
+
+        a[disabled] {
+            color: rgba(0,0,0,.25);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        svg:not(:root) {
+            overflow: hidden;
+        }
+
+        [role=button], a, area, button, input:not([type=range]), label, select, summary, textarea {
+            touch-action: manipulation;
+        }
+
+        caption {
+            caption-side: bottom;
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            color: #909fa7;
+            text-align: left;
+            caption-side: bottom;
+        }
+
+        button, input, optgroup, select, textarea {
+            color: inherit;
+            font-size: inherit;
+            font-family: inherit;
+            line-height: inherit;
+        }
+
+        [type=reset], [type=submit], button, html [type=button] {
+            -webkit-appearance: button;
+        }
+
+        legend {
+            max-width: 100%;
+            color: inherit;
+            line-height: inherit;
+        }
+
+        [type=search]::-webkit-search-cancel-button, [type=search]::-webkit-search-decoration {
+            -webkit-appearance: none;
+        }
+
+        ::-moz-selection {
+            color: #fff;
+            background: #009688;
+        }
+
+        ::selection {
+            color: #fff;
+            background: #009688;
+        }
+
+        .clearfix {
+            zoom: 1;
+        }
+
+        .clearfix::after, .clearfix::before {
+            display: table;
+            content: '';
+        }
+
+        .hide {
+            display: none!important;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        input::-ms-clear, input::-ms-reveal {
+            display: none;
+        }
+
+        body {
+            font-family: Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: rgba(0, 0, 0, .8);
+            font-size: .875rem;
+            font-weight: 400;
+            line-height: 1.2857;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #009688;
+            background-image: linear-gradient(90deg, #009688 10%, #007d71 90%);
+            z-index: 9999;
+            transition: opacity .65s;
+            display: none;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #009688;
+            background-image: linear-gradient(90deg, #009688 10%, #007d71 90%);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .top-nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .top-nav-menu {
+            display: flex;
+            gap: 4px;
+        }
+
+        .top-nav-menu-item {
+            padding: 6px 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 4px;
+            text-decoration: none;
+            outline: 0;
+        }
+
+        .top-nav-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .top-nav-menu-item.active {
+            position: relative;
+        }
+
+        .top-nav-menu-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: white;
+        }
+
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-main-block {
+            margin: 20px;
+            background: white;
+            border-radius: 4px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .098), 0 1px 5px 0 rgba(0, 0, 0, .084);
+            border: 0;
+            margin-bottom: 16px;
+        }
+
+        /* Content Header */
+        .content-wrapper .content-heading {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            line-height: 1.1;
+            color: #929292;
+            margin: 0;
+            padding: 20px;
+            font-weight: 400;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #cfdbe2;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            line-height: 1.1;
+            color: #929292;
+            margin: -20px -20px 20px;
+            padding: 20px;
+            font-weight: 400;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #cfdbe2;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.85);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .dashboard-main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .dashboard-sidebar {
+            width: 300px;
+            padding: 20px;
+            border-left: 1px solid #e8e8e8;
+            overflow-y: auto;
+        }
+
+        /* Provider Info */
+        .provider-info {
+            margin-bottom: 24px;
+        }
+
+        .provider-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 8px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            margin-bottom: 24px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        .stat-card {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .row-right-border {
+            border-right: 1px solid #d8d8d8;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #595959;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 600;
+            color: #000000;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #595959;
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        /* Status Cards */
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin-bottom: 24px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        .status-card {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .status-card-title {
+            font-size: 14px;
+            color: #595959;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .status-card-value {
+            font-size: 30px;
+            font-weight: 600;
+            color: #000000;
+            margin: 8px 0;
+        }
+
+        .status-card-label {
+            font-size: 14px;
+            color: #595959;
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        /* Enrollment Status */
+        .enrollment-section {
+            margin-bottom: 24px;
+        }
+
+        /* Attendance Section */
+        .table-container {
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 16px;
+        }
+
+        /* Table Container */
+        .table-container {
+            overflow: auto;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #fafafa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            color: #595959;
+            border-bottom: 1px solid #e8e8e8;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        /* Sidebar Sections */
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 12px;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .checklist-item {
+            padding: 8px 0;
+            font-size: 13px;
+            color: #595959;
+        }
+
+        .checklist-item a {
+            color: #009688;
+            text-decoration: none;
+        }
+
+        .checklist-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Announcements */
+        .announcement {
+            padding: 12px;
+            background: #f0f9ff;
+            border-left: 4px solid #1890ff;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .announcement-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1890ff;
+            margin-bottom: 8px;
+        }
+
+        .announcement-content {
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer-bar {
+            background: #f5f5f5;
+            padding: 8px 24px;
+            border-top: 1px solid #e8e8e8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+
+        .support-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1890ff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            position: fixed;
+            bottom: 24px;
+            right: 120px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dx-button-text {
+            display: inline;
+            vertical-align: middle;
+            line-height: 17px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: .04em;
+        }
+
+        .dashboard-container .dashboard-main .provider-info .dx-button .dx-button-text {
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: normal;
+            line-height: normal;
+        }
+
+        /* Recent Connections */
+        .recent-connections-section {
+            margin-bottom: 24px;
+        }
+
+        .recent-connections-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .recent-connections-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recent-connections-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .navigate-connections-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            color: #009688;
+            transition: all 0.2s;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .navigate-connections-icon:hover {
+            color: #00695c;
+            background: rgba(0, 150, 136, 0.1);
+        }
+
+        .manage-connection-btn {
+            background: #009688;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .manage-connection-btn:hover {
+            background: #007d71;
+        }
+
+        .recent-connections-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .connection-card {
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .type-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 6px 18px 6px 14px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom-left-radius: 18px;
+            border: 2px solid white;
+            border-top: none;
+            border-right: none;
+            z-index: 10;
+        }
+
+        .type-tag.payment {
+            background: #ff9800;
+        }
+
+        .type-tag.submission {
+            background: #4caf50;
+        }
+
+        .connection-card-header {
+            padding: 40px 16px 12px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background-color: #fafafa;
+            flex-wrap: wrap;
+        }
+
+        .connection-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #009688;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .connection-info {
+            flex: 1;
+        }
+
+        .connection-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .connection-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .connection-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .connection-badge.owner {
+            background: #fff7e6;
+            color: #d48806;
+            border: 1px solid #ffe58f;
+        }
+
+        .connection-badge.active {
+            background: #e6f7f4;
+            color: #009688;
+            border: 1px solid #b5f5ec;
+        }
+
+        .connection-badge.shared {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+
+        .connection-provider {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 2px;
+        }
+
+        .connection-card-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            padding: 12px 16px;
+            gap: 8px;
+            background-color: #ffffff;
+        }
+
+        .connection-stat-item {
+            text-align: left;
+        }
+
+        .connection-stat-label {
+            font-size: 11px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .connection-stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.85);
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="top-nav-left">
+            <div class="top-nav-logo">
+                <img src="../images/ccn4logo.png" alt="MyCareConnect" style="width: 160px; height: auto;">
+            </div>
+            <div class="top-nav-menu">
+                <button class="top-nav-menu-item active">Home</button>
+                <button class="top-nav-menu-item">Students</button>
+                <button class="top-nav-menu-item">Attendance</button>
+                <button class="top-nav-menu-item" onclick="window.location.href='oldsubsidy.html'">Subsidies</button>
+                <button class="top-nav-menu-item">Documents</button>
+                <button class="top-nav-menu-item">Messaging</button>
+                <button class="top-nav-menu-item">Billing</button>
+                <button class="top-nav-menu-item">Marketing</button>
+                <button class="top-nav-menu-item">Admin</button>
+            </div>
+        </div>
+        <div class="top-nav-right">
+            <span>English ▼</span>
+            <span>CCN20211 SFrTest ▼</span>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Dashboard Container -->
+            <div class="dashboard-container">
+                <!-- Main Dashboard -->
+                <div class="dashboard-main">
+                    <!-- Recent Connections Section -->
+                    <div class="recent-connections-section">
+                        <div class="recent-connections-header">
+                            <div class="recent-connections-title-row">
+                                <span class="recent-connections-title">Connection Show Card</span>
+                                <a href="newsubsidyconnections.html" class="navigate-connections-icon">
+                                    <img src="../images/urllink.png" alt="External Link" style="width: 16px; height: 16px;">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="recent-connections-grid">
+                            <div class="connection-card">
+                                <div class="type-tag submission">Submission</div>
+                                <div class="connection-card-header">
+                                    <div class="connection-avatar">S</div>
+                                    <div class="connection-info">
+                                        <div class="connection-name-row">
+                                            <span class="connection-name">SHTestCC4Demo</span>
+                                            <span class="connection-badge owner">Owner</span>
+                                        </div>
+                                        <div class="connection-provider">chaonewprovider30 #211604</div>
+                                    </div>
+                                </div>
+                                <div class="connection-card-stats">
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Children</div>
+                                        <div class="connection-stat-value">2</div>
+                                    </div>
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Authorized Users</div>
+                                        <div class="connection-stat-value">3</div>
+                                    </div>
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Pending Submission <span style="color: #009688;">(April 2026)</span></div>
+                                        <div class="connection-stat-value">2</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="connection-card">
+                                <div class="type-tag payment">SRPP</div>
+                                <div class="connection-card-header">
+                                    <div class="connection-avatar">S</div>
+                                    <div class="connection-info">
+                                        <div class="connection-name-row">
+                                            <span class="connection-name">SHTestCC4Demo</span>
+                                            <span class="connection-badge shared">Shared</span>
+                                        </div>
+                                        <div class="connection-provider">chaonewprovider #211600</div>
+                                    </div>
+                                </div>
+                                <div class="connection-card-stats" style="display: flex; flex-direction: column; gap: 8px; grid-template-columns: none;">
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">CDA SRPP Exclusive Connection</div>
+                                    </div>
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Automated Sync for Payment & EOP Workflows</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="connection-card">
+                                <div class="type-tag submission">Submission</div>
+                                <div class="connection-card-header">
+                                    <div class="connection-avatar">S</div>
+                                    <div class="connection-info">
+                                        <div class="connection-name-row">
+                                            <span class="connection-name">SHTestCC4Demo</span>
+                                            <span class="connection-badge shared">Shared</span>
+                                        </div>
+                                        <div class="connection-provider">chaonewprovider #211600</div>
+                                    </div>
+                                </div>
+                                <div class="connection-card-stats">
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Children</div>
+                                        <div class="connection-stat-value">2</div>
+                                    </div>
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Authorized Users</div>
+                                        <div class="connection-stat-value">3</div>
+                                    </div>
+                                    <div class="connection-stat-item">
+                                        <div class="connection-stat-label">Pending Submission <span style="color: #009688;">(April 2026)</span></div>
+                                        <div class="connection-stat-value">2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Provider Info -->
+                    <div class="provider-info">
+                        <div style="margin-bottom: 16px;">
+                            <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-buttongroup-first-item dx-buttongroup-last-item dx-shape-standard dx-dropdownbutton-action dx-buttongroup-item-has-width" role="button" aria-label="Little Sprouts Early Learning Center">
+                                <div class="dx-button-content">
+                                    <div class="dx-inkripple"></div>
+                                    <span class="dx-button-text">Little Sprouts Early Learning Center</span>
+                                    <i class="dx-icon dx-icon-spindown dx-icon-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-section">
+                            <div class="stat-card row-right-border">
+                                <div class="stat-title">Pending & Active</div>
+                                <div class="stat-value">2</div>
+                                <div class="stat-label">
+                                    <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">people</span>
+                                    Students
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-title">Pending & Partial Paid</div>
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">
+                                    <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">receipt</span>
+                                    Unpaid
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Cards -->
+                    <div style="font-size: 14px; font-weight: 500; color: #000000CC; margin-bottom: 12px;">Subsidy</div>
+                    <div class="status-cards">
+                        <div class="status-card row-right-border">
+                            <div class="status-card-title">04/2026</div>
+                            <div class="status-card-value">0</div>
+                            <div class="status-card-label">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">receipt</span>
+                                TimeSheets
+                            </div>
+                        </div>
+                        <div class="status-card row-right-border">
+                            <div class="status-card-title">04/2026</div>
+                            <div class="status-card-value">0</div>
+                            <div class="status-card-label">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">payment</span>
+                                Payments
+                            </div>
+                        </div>
+                        <div class="status-card row-right-border">
+                            <div class="status-card-title">Subsidy Documents</div>
+                            <div class="status-card-value">0</div>
+                            <div class="status-card-label">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">description</span>
+                                Payments
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-card-title">Subsidy Documents</div>
+                            <div class="status-card-value">0</div>
+                            <div class="status-card-label">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px; color: #009688;">checklist</span>
+                                To Complete
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Status -->
+                    <div class="enrollment-section">
+
+                        <div class="table-container" style="padding: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div class="dx-show-invalid-badge dx-dropdownbox dx-textbox dx-texteditor dx-show-clear-button dx-dropdowneditor-button-visible dx-editor-filled dx-texteditor-empty dx-widget dx-texteditor-with-label dx-dropdowneditor dx-dropdowneditor-field-clickable" style="width: 150px; height: 36px;">
+                                    <div class="dx-dropdowneditor-input-wrapper">
+                                        <input type="hidden" value="">
+                                        <div class="dx-texteditor-container">
+                                            <div class="dx-texteditor-input-container">
+                                                <input autocomplete="off" class="dx-texteditor-input" aria-haspopup="true" aria-autocomplete="list" type="text" spellcheck="false" tabindex="0" role="combobox" aria-expanded="false" style="padding-right: 0px; text-align: center;" value="04/13/2026">
+                                                <div data-dx_placeholder="Select a value or enter MM/DD/YYYY" class="dx-placeholder dx-state-invisible"></div>
+                                            </div>
+                                            <div class="dx-texteditor-buttons-container">
+                                                <div></div>
+                                                <div class="dx-widget dx-button-mode-contained dx-button-normal dx-dropdowneditor-button" aria-label="Select" role="button">
+                                                    <div class="dx-button-content">
+                                                        <div class="dx-dropdowneditor-icon"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn-action" style="background: white; color: #009688; padding: 8px 16px; border-radius: 4px; border: none; display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-icons" style="font-size: 18px; vertical-align: middle; color: #009688;">qr_code</span>
+                                    <span style="vertical-align: middle;">CONTACTLESS ATTENDANCE</span>
+                                </button>
+                            </div>
+                            <table style="border-collapse: collapse; width: 100%; border: 1px solid #e8e8e8;">
+                                <thead>
+                                    <tr style="background: #fafafa;">
+                                        <th style="padding: 12px 16px; text-align: left; font-weight: 500; color: #595959; border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8;">
+                                            <div style="display: flex; align-items: center;">
+                                                CLASSROOM
+                                                <i class="dx-icon dx-icon-spindown dx-icon-right" style="margin-left: 8px;"></i>
+                                            </div>
+                                        </th>
+                                        <th style="padding: 12px 16px; text-align: center; font-weight: 500; color: #595959; border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8;">ALL</th>
+                                        <th style="padding: 12px 16px; text-align: center; font-weight: 500; color: #595959; border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8;">ATTENDED</th>
+                                        <th style="padding: 12px 16px; text-align: center; font-weight: 500; color: #595959; border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8;">ABSENT</th>
+                                        <th style="padding: 12px 16px; text-align: center; font-weight: 500; color: #595959; border-bottom: 1px solid #e8e8e8;">INCOMPLETE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 12px 16px; border-right: 1px solid #e8e8e8;">All</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #01BB92; border-right: 1px solid #e8e8e8;">2</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #01BB92; border-right: 1px solid #e8e8e8;">0</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #FFC224; border-right: 1px solid #e8e8e8;">0</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #9B9B9B;">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px 16px; border-right: 1px solid #e8e8e8;">Class 1</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #01BB92; border-right: 1px solid #e8e8e8;">2</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #01BB92; border-right: 1px solid #e8e8e8;">0</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #FFC224; border-right: 1px solid #e8e8e8;">0</td>
+                                        <td style="padding: 12px 16px; text-align: center; color: #9B9B9B;">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Sidebar -->
+                <div class="dashboard-sidebar">
+                    <!-- Program Set Up -->
+                    <div class="sidebar-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div class="sidebar-section-title">Program Set Up</div>
+                            <div style="font-size: 14px; color: #666;">0/6</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                            <div style="width: 20px; height: 2px; background-color: #e8e8e8;"></div>
+                        </div>
+                        <div style="background-color: white; border-radius: 4px; border: 1px solid #e8e8e8; padding: 16px;">
+                            <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">ondemand_video</span>
+                                <span>Watch Introduction Video</span>
+                            </div>
+                            <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">people</span>
+                                <span>Add Student and Parents</span>
+                            </div>
+                            <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">settings</span>
+                                <span>Access CareConnect Web Tools</span>
+                            </div>
+                            <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">receipt</span>
+                                <span>Get Started with Private Pay Billing</span>
+                            </div>
+                            <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">home</span>
+                                <span>Get Started with Subsidy Billing</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 12px; color: #009688;">send</span>
+                                <span>Invite Parents</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Announcements -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Announcements</div>
+                        <div style="background-color: white; border-radius: 4px; border: 1px solid #e8e8e8; padding: 16px; margin-top: 10px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="width: 40px; height: 40px; background-color: #1890ff; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8 12L11 15L16 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div style="font-weight: 500; font-size: 16px;">CareConnect Team</div>
+                            </div>
+                            <div style="font-size: 14px; color: #333; margin-bottom: 8px;">Welcome to the CareConnect community!</div>
+                            <div style="font-size: 14px; color: #666; line-height: 1.4;">
+                                If you're new here, check out our quick videos: introducing CareConnect and navigating CareConnect.<br>
+                                We also invite you to join our weekly webinar, available in English and Spanish to learn more about CareConnect...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+        <div>© 2026 MCT | CareConnect Provider. Version 5.1.245.5</div>
+    </div>
+
+    <!-- Support Button -->
+    <div class="support-btn">
+        <span class="material-icons" style="color: #009688;">support_agent</span>
+        Support
+    </div>
+
+    <!-- User Avatar -->
+    <div class="user-avatar">
+        JD
+    </div>
+
+    <script>
+        // Add any necessary JavaScript here
+    </script>
+</body>
+</html>

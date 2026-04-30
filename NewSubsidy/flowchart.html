@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程图编辑器 - Connection 创建流程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #73d13d;
+        }
+
+        .btn-default {
+            background: white;
+            border: 1px solid #d9d9d9;
+            color: #666;
+        }
+
+        .btn-default:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 60px);
+            overflow: auto;
+            background-image: 
+                linear-gradient(#e8e8e8 1px, transparent 1px),
+                linear-gradient(90deg, #e8e8e8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #flowchart-canvas {
+            position: relative;
+            width: 2000px;
+            height: 1500px;
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+        .flow-node {
+            position: absolute;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: move;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: box-shadow 0.2s, transform 0.1s;
+            min-width: 140px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .flow-node:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .flow-node.dragging {
+            opacity: 0.8;
+            z-index: 100;
+        }
+
+        .flow-node.selected {
+            outline: 2px solid #1890ff;
+            outline-offset: 2px;
+        }
+
+        .flow-node.start {
+            background: #52c41a;
+            color: white;
+            border-radius: 30px;
+        }
+
+        .flow-node.end {
+            background: #ff4d4f;
+            color: white;
+            border-radius: 30px;
+        }
+
+        .flow-node.decision {
+            background: #faad14;
+            color: white;
+            transform: rotate(0deg);
+            border-radius: 8px;
+        }
+
+        .flow-node.decision::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #faad14;
+        }
+
+        .flow-node.action {
+            background: #1890ff;
+            color: white;
+        }
+
+        .flow-node.process {
+            background: #722ed1;
+            color: white;
+        }
+
+        .node-content {
+            line-height: 1.4;
+        }
+
+        .node-label {
+            position: absolute;
+            font-size: 11px;
+            color: #666;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 20;
+        }
+
+        .connection-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #1890ff;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: crosshair;
+            z-index: 15;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .connection-point:hover {
+            background: #40a9ff;
+            transform: scale(1.2);
+        }
+
+        .connection-point.top { top: -6px; left: 50%; transform: translateX(-50%); }
+        .connection-point.bottom { bottom: -6px; left: 50%; transform: translateX(-50%); }
+        .connection-point.left { left: -6px; top: 50%; transform: translateY(-50%); }
+        .connection-point.right { right: -6px; top: 50%; transform: translateY(-50%); }
+
+        svg.connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .connection-line {
+            fill: none;
+            stroke: #999;
+            stroke-width: 2;
+            pointer-events: stroke;
+            cursor: pointer;
+        }
+
+        .connection-line:hover {
+            stroke: #1890ff;
+            stroke-width: 3;
+        }
+
+        .connection-line.selected {
+            stroke: #1890ff;
+            stroke-width: 3;
+        }
+
+        .connection-arrow {
+            fill: #999;
+        }
+
+        .connection-arrow.selected {
+            fill: #1890ff;
+        }
+
+        .connection-label {
+            font-size: 12px;
+            fill: #666;
+            text-anchor: middle;
+            background: white;
+        }
+
+        .context-menu {
+            position: fixed;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            z-index: 1000;
+            display: none;
+            min-width: 160px;
+        }
+
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .context-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .context-menu-item.delete {
+            color: #ff4d4f;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1890ff;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .node-type-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .node-type-option {
+            padding: 8px 16px;
+            border: 2px solid #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .node-type-option:hover {
+            border-color: #1890ff;
+        }
+
+        .node-type-option.selected {
+            border-color: #1890ff;
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .legend {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 50;
+        }
+
+        .legend-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔗 Connection 创建流程图编辑器</h1>
+        <div class="toolbar">
+            <button class="btn btn-default" onclick="resetView()">重置视图</button>
+            <button class="btn btn-primary" onclick="addNode()">添加节点</button>
+            <button class="btn btn-success" onclick="exportFlow()">导出JSON</button>
+        </div>
+    </div>
+
+    <div class="canvas-container" id="canvasContainer">
+        <div id="flowchart-canvas">
+            <svg class="connections" id="connectionsSvg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+                    </marker>
+                    <marker id="arrowhead-selected" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#1890ff" />
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-title">节点类型</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #52c41a; border-radius: 8px;"></div>
+            <span>开始</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff4d4f; border-radius: 8px;"></div>
+            <span>结束</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #faad14;"></div>
+            <span>判断</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #1890ff;"></div>
+            <span>执行操作</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #722ed1;"></div>
+            <span>流程步骤</span>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="editNode()">编辑节点</div>
+        <div class="context-menu-item" onclick="duplicateNode()">复制节点</div>
+        <div class="context-menu-item delete" onclick="deleteNode()">删除节点</div>
+    </div>
+
+    <div class="modal-overlay" id="nodeModal">
+        <div class="modal">
+            <div class="modal-header">编辑节点</div>
+            <div class="form-group">
+                <label>节点类型</label>
+                <div class="node-type-selector">
+                    <div class="node-type-option" data-type="start" onclick="selectNodeType(this)">开始</div>
+                    <div class="node-type-option" data-type="decision" onclick="selectNodeType(this)">判断</div>
+                    <div class="node-type-option" data-type="action" onclick="selectNodeType(this)">执行操作</div>
+                    <div class="node-type-option" data-type="process" onclick="selectNodeType(this)">流程步骤</div>
+                    <div class="node-type-option" data-type="end" onclick="selectNodeType(this)">结束</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>节点文本</label>
+                <textarea id="nodeText" placeholder="输入节点内容..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveNode()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 流程图数据
+        let nodes = [
+            { id: 'node-1', type: 'start', text: '开始', x: 400, y: 50 },
+            { id: 'node-2', type: 'decision', text: '是否已有\nConnection?', x: 400, y: 150 },
+            { id: 'node-3', type: 'process', text: '结束\n(无需重复创建)', x: 700, y: 150 },
+            { id: 'node-4', type: 'decision', text: 'Agency Provider\n是否有 Email?', x: 400, y: 280 },
+            { id: 'node-5', type: 'process', text: '结束\n(无邮箱无法创建)', x: 700, y: 280 },
+            { id: 'node-6', type: 'decision', text: 'Email 是否有\n已注册账号?', x: 400, y: 410 },
+            { id: 'node-7', type: 'decision', text: 'Create Individual\nProvider Account\n是否为 ON?', x: 200, y: 540 },
+            { id: 'node-8', type: 'action', text: '创建 Customer 222 账号\n建立 Payment Owner Connection\n发送 Welcome 通知', x: 50, y: 700 },
+            { id: 'node-9', type: 'action', text: '走 CCN Provider 流程\n创建 PV customer 账号\n与 Site 建立 Linkage', x: 350, y: 700 },
+            { id: 'node-10', type: 'decision', text: '已注册账号的\nCustomer ID = 222?', x: 600, y: 540 },
+            { id: 'node-11', type: 'action', text: '建立 Submission\nOwner Connection\n发送 Link 通知', x: 500, y: 700 },
+            { id: 'node-12', type: 'decision', text: '已注册账号的\nCustomer ID = 0?', x: 750, y: 540 },
+            { id: 'node-13', type: 'action', text: '修改账号类型为 Provider\nCustomer ID 改为 222\n建立 Payment Owner Connection\n发送 Link 通知', x: 650, y: 700 },
+            { id: 'node-14', type: 'action', text: '创建 Submission\nOwner Connection\n与该 User 关联\n发送 Link 通知', x: 900, y: 700 },
+            { id: 'node-15', type: 'end', text: '流程结束', x: 500, y: 850 }
+        ];
+
+        let connections = [
+            { from: 'node-1', to: 'node-2', label: '' },
+            { from: 'node-2', to: 'node-3', label: 'Y (是)' },
+            { from: 'node-2', to: 'node-4', label: 'N (否)' },
+            { from: 'node-3', to: 'node-15', label: '' },
+            { from: 'node-4', to: 'node-5', label: 'N (否)' },
+            { from: 'node-5', to: 'node-15', label: '' },
+            { from: 'node-4', to: 'node-6', label: 'Y (是)' },
+            { from: 'node-6', to: 'node-7', label: 'N (无账号)' },
+            { from: 'node-6', to: 'node-10', label: 'Y (有账号)' },
+            { from: 'node-7', to: 'node-8', label: 'Y (ON)' },
+            { from: 'node-7', to: 'node-9', label: 'N (OFF)' },
+            { from: 'node-8', to: 'node-15', label: '' },
+            { from: 'node-9', to: 'node-15', label: '' },
+            { from: 'node-10', to: 'node-11', label: 'Y (=222)' },
+            { from: 'node-10', to: 'node-12', label: 'N (≠222)' },
+            { from: 'node-11', to: 'node-15', label: '' },
+            { from: 'node-12', to: 'node-13', label: 'Y (=0)' },
+            { from: 'node-12', to: 'node-14', label: 'N (≠0)' },
+            { from: 'node-13', to: 'node-15', label: '' },
+            { from: 'node-14', to: 'node-15', label: '' }
+        ];
+
+        let selectedNode = null;
+        let selectedConnection = null;
+        let draggedNode = null;
+        let dragOffset = { x: 0, y: 0 };
+        let contextMenuNode = null;
+        let isConnecting = false;
+        let connectionStart = null;
+        let tempLine = null;
+
+        const canvas = document.getElementById('flowchart-canvas');
+        const svg = document.getElementById('connectionsSvg');
+        const contextMenu = document.getElementById('contextMenu');
+
+        function init() {
+            renderNodes();
+            renderConnections();
+            setupEventListeners();
+        }
+
+        function renderNodes() {
+            document.querySelectorAll('.flow-node').forEach(n => n.remove());
+            
+            nodes.forEach(node => {
+                const el = document.createElement('div');
+                el.className = `flow-node ${node.type}`;
+                el.id = node.id;
+                el.style.left = node.x + 'px';
+                el.style.top = node.y + 'px';
+                el.innerHTML = `
+                    <div class="node-content">${node.text.replace(/\n/g, '<br>')}</div>
+                    <div class="connection-point top" data-point="top"></div>
+                    <div class="connection-point bottom" data-point="bottom"></div>
+                    <div class="connection-point left" data-point="left"></div>
+                    <div class="connection-point right" data-point="right"></div>
+                `;
+                
+                el.addEventListener('mousedown', (e) => startDrag(e, node));
+                el.addEventListener('contextmenu', (e) => showContextMenu(e, node));
+                
+                canvas.appendChild(el);
+            });
+        }
+
+        function renderConnections() {
+            svg.innerHTML = `
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+                    </marker>
+                    <marker id="arrowhead-selected" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#1890ff" />
+                    </marker>
+                </defs>
+            `;
+
+            connections.forEach((conn, index) => {
+                const fromNode = nodes.find(n => n.id === conn.from);
+                const toNode = nodes.find(n => n.id === conn.to);
+                
+                if (!fromNode || !toNode) return;
+
+                const path = createConnectionPath(fromNode, toNode);
+                const midPoint = getPathMidPoint(fromNode, toNode);
+
+                const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathEl.setAttribute('d', path);
+                pathEl.setAttribute('class', 'connection-line');
+                pathEl.setAttribute('marker-end', 'url(#arrowhead)');
+                pathEl.setAttribute('data-index', index);
+                pathEl.addEventListener('click', (e) => selectConnection(e, index));
+                svg.appendChild(pathEl);
+
+                if (conn.label) {
+                    const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    textEl.setAttribute('x', midPoint.x);
+                    textEl.setAttribute('y', midPoint.y - 8);
+                    textEl.setAttribute('class', 'connection-label');
+                    textEl.textContent = conn.label;
+                    svg.appendChild(textEl);
+                }
+            });
+        }
+
+        function createConnectionPath(from, to) {
+            const fromEl = document.getElementById(from.id);
+            const toEl = document.getElementById(to.id);
+            
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+
+            const x1 = from.x + fromRect.width / 2;
+            const y1 = from.y + fromRect.height / 2;
+            const x2 = to.x + toRect.width / 2;
+            const y2 = to.y + toRect.height / 2;
+
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            let startX = x1, startY = y1, endX = x2, endY = y2;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                startX = dx > 0 ? from.x + fromRect.width : from.x;
+                startY = y1;
+                endX = dx > 0 ? to.x : to.x + toRect.width;
+                endY = y2;
+            } else {
+                startX = x1;
+                startY = dy > 0 ? from.y + fromRect.height : from.y;
+                endX = x2;
+                endY = dy > 0 ? to.y : to.y + toRect.height;
+            }
+
+            const controlY = (startY + endY) / 2;
+            return `M ${startX} ${startY} C ${startX} ${controlY}, ${endX} ${controlY}, ${endX} ${endY}`;
+        }
+
+        function getPathMidPoint(from, to) {
+            const fromEl = document.getElementById(from.id);
+            const toEl = document.getElementById(to.id);
+            
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+
+            const x1 = from.x + fromRect.width / 2;
+            const y1 = from.y + fromRect.height / 2;
+            const x2 = to.x + toRect.width / 2;
+            const y2 = to.y + toRect.height / 2;
+
+            return {
+                x: (x1 + x2) / 2,
+                y: (y1 + y2) / 2
+            };
+        }
+
+        function startDrag(e, node) {
+            if (e.target.classList.contains('connection-point')) {
+                startConnection(e, node, e.target.dataset.point);
+                return;
+            }
+
+            e.preventDefault();
+            draggedNode = node;
+            const el = document.getElementById(node.id);
+            el.classList.add('dragging');
+            
+            const rect = el.getBoundingClientRect();
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+
+            selectNode(node);
+        }
+
+        function startConnection(e, node, point) {
+            e.stopPropagation();
+            isConnecting = true;
+            connectionStart = { node, point };
+
+            const rect = document.getElementById(node.id).getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+
+            tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            tempLine.setAttribute('class', 'connection-line');
+            tempLine.setAttribute('stroke-dasharray', '5,5');
+            svg.appendChild(tempLine);
+        }
+
+        function selectNode(node) {
+            document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('selected'));
+            document.querySelectorAll('.connection-line').forEach(l => {
+                l.classList.remove('selected');
+                l.setAttribute('marker-end', 'url(#arrowhead)');
+            });
+            
+            selectedNode = node;
+            selectedConnection = null;
+            
+            if (node) {
+                document.getElementById(node.id).classList.add('selected');
+            }
+        }
+
+        function selectConnection(e, index) {
+            e.stopPropagation();
+            
+            document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('selected'));
+            document.querySelectorAll('.connection-line').forEach(l => {
+                l.classList.remove('selected');
+                l.setAttribute('marker-end', 'url(#arrowhead)');
+            });
+
+            const line = document.querySelector(`.connection-line[data-index="${index}"]`);
+            line.classList.add('selected');
+            line.setAttribute('marker-end', 'url(#arrowhead-selected)');
+            
+            selectedConnection = index;
+            selectedNode = null;
+        }
+
+        function setupEventListeners() {
+            document.addEventListener('mousemove', (e) => {
+                if (draggedNode) {
+                    const canvasRect = canvas.getBoundingClientRect();
+                    const newX = e.clientX - canvasRect.left - dragOffset.x;
+                    const newY = e.clientY - canvasRect.top - dragOffset.y;
+
+                    draggedNode.x = Math.max(0, newX);
+                    draggedNode.y = Math.max(0, newY);
+
+                    const el = document.getElementById(draggedNode.id);
+                    el.style.left = draggedNode.x + 'px';
+                    el.style.top = draggedNode.y + 'px';
+
+                    renderConnections();
+                }
+
+                if (isConnecting && tempLine) {
+                    const canvasRect = canvas.getBoundingClientRect();
+                    const startEl = document.getElementById(connectionStart.node.id);
+                    const startRect = startEl.getBoundingClientRect();
+                    
+                    const x1 = connectionStart.node.x + startRect.width / 2;
+                    const y1 = connectionStart.node.y + startRect.height / 2;
+                    const x2 = e.clientX - canvasRect.left;
+                    const y2 = e.clientY - canvasRect.top;
+
+                    tempLine.setAttribute('d', `M ${x1} ${y1} L ${x2} ${y2}`);
+                }
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (draggedNode) {
+                    document.getElementById(draggedNode.id).classList.remove('dragging');
+                    draggedNode = null;
+                }
+
+                if (isConnecting) {
+                    const target = e.target.closest('.flow-node');
+                    if (target && target.id !== connectionStart.node.id) {
+                        connections.push({
+                            from: connectionStart.node.id,
+                            to: target.id,
+                            label: ''
+                        });
+                        renderConnections();
+                    }
+                    
+                    if (tempLine) {
+                        tempLine.remove();
+                        tempLine = null;
+                    }
+                    isConnecting = false;
+                    connectionStart = null;
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.flow-node') && !e.target.closest('.connection-line')) {
+                    selectNode(null);
+                }
+                contextMenu.style.display = 'none';
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Delete') {
+                    if (selectedNode) {
+                        deleteNode();
+                    } else if (selectedConnection !== null) {
+                        connections.splice(selectedConnection, 1);
+                        selectedConnection = null;
+                        renderConnections();
+                    }
+                }
+            });
+        }
+
+        function showContextMenu(e, node) {
+            e.preventDefault();
+            contextMenuNode = node;
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+            contextMenu.style.display = 'block';
+        }
+
+        function addNode() {
+            const newId = 'node-' + (nodes.length + 1);
+            const newNode = {
+                id: newId,
+                type: 'process',
+                text: '新节点',
+                x: 100,
+                y: 100
+            };
+            nodes.push(newNode);
+            renderNodes();
+            selectNode(newNode);
+            editNode();
+        }
+
+        function editNode() {
+            if (!contextMenuNode && !selectedNode) return;
+            
+            const node = contextMenuNode || selectedNode;
+            document.getElementById('nodeText').value = node.text;
+            
+            document.querySelectorAll('.node-type-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.type === node.type);
+            });
+
+            document.getElementById('nodeModal').classList.add('active');
+            contextMenu.style.display = 'none';
+        }
+
+        function selectNodeType(el) {
+            document.querySelectorAll('.node-type-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function saveNode() {
+            const node = contextMenuNode || selectedNode;
+            if (!node) return;
+
+            node.text = document.getElementById('nodeText').value;
+            const selectedType = document.querySelector('.node-type-option.selected');
+            if (selectedType) {
+                node.type = selectedType.dataset.type;
+            }
+
+            renderNodes();
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('nodeModal').classList.remove('active');
+            contextMenuNode = null;
+        }
+
+        function deleteNode() {
+            const node = contextMenuNode || selectedNode;
+            if (!node) return;
+
+            nodes = nodes.filter(n => n.id !== node.id);
+            connections = connections.filter(c => c.from !== node.id && c.to !== node.id);
+            
+            renderNodes();
+            renderConnections();
+            selectNode(null);
+            contextMenu.style.display = 'none';
+        }
+
+        function duplicateNode() {
+            const node = contextMenuNode || selectedNode;
+            if (!node) return;
+
+            const newId = 'node-' + (Date.now());
+            const newNode = {
+                id: newId,
+                type: node.type,
+                text: node.text + ' (复制)',
+                x: node.x + 50,
+                y: node.y + 50
+            };
+            nodes.push(newNode);
+            renderNodes();
+            contextMenu.style.display = 'none';
+        }
+
+        function resetView() {
+            document.getElementById('canvasContainer').scrollTo(0, 0);
+        }
+
+        function exportFlow() {
+            const data = { nodes, connections };
+            const json = JSON.stringify(data, null, 2);
+            
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'flowchart.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        init();
+    </script>
+</body>
+</html>
