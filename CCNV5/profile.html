@@ -396,6 +396,30 @@
             flex-shrink: 0;
             user-select: none;
             -webkit-user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-placeholder-box.has-image {
+            border-style: solid;
+            border-color: #009688;
+            cursor: default;
+        }
+
+        .upload-placeholder-box.has-image:hover {
+            border-color: #009688;
+            background: #fafafa;
+            transform: none;
+        }
+
+        .upload-placeholder-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .upload-placeholder-box:hover {
@@ -1915,7 +1939,7 @@
 
                     <div class="image-form-field" id="photoSection">
                         <span class="image-form-field-label">Album Photos</span>
-                        <div class="upload-file-selector">
+                        <div class="upload-file-selector" id="photoUploadSelector">
                             <div class="upload-placeholder-box" onclick="triggerPhotoLocalUpload()">
                                 <span class="upload-placeholder-plus">+</span>
                             </div>
@@ -2732,19 +2756,29 @@
             const data = imageData[type];
             if (!data) return;
 
-            const container = document.getElementById(`${type}PreviewContainer`);
-            if (!container) return;
+            const placeholderBox = document.querySelector(`#${type}Section .upload-placeholder-box`);
 
-            container.innerHTML = `
-                <div class="preview-thumb-inline">
-                    <img src="${data.src}" alt="${type}">
-                </div>
-            `;
-            container.classList.remove('hidden');
+            if (placeholderBox) {
+                placeholderBox.classList.add('has-image');
+                placeholderBox.innerHTML = `<img src="${data.src}" alt="${type}">`;
+                placeholderBox.onclick = null;
+            }
         }
 
         function renderPhotoGrid() {
             const grid = document.getElementById('photoGrid');
+            const uploadSelector = document.getElementById('photoUploadSelector');
+
+            if (imageData.photos.length > 0) {
+                if (uploadSelector) {
+                    uploadSelector.classList.add('hidden');
+                }
+            } else {
+                if (uploadSelector) {
+                    uploadSelector.classList.remove('hidden');
+                }
+            }
+
             grid.innerHTML = '';
             imageData.photos.forEach((photo, index) => {
                 const item = document.createElement('div');
@@ -2765,10 +2799,19 @@
                 item.addEventListener('drop', handlePhotoDrop);
                 grid.appendChild(item);
             });
+
+            const addBox = document.createElement('div');
+            addBox.className = 'upload-placeholder-box';
+            addBox.style.width = '100px';
+            addBox.style.height = '80px';
+            addBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+            addBox.onclick = triggerPhotoLocalUpload;
+            grid.appendChild(addBox);
         }
 
         function updateCoverFromAuto() {
             const coverPreviewEl = document.getElementById('coverPreviewContainer');
+            const placeholderBox = document.querySelector('#coverImageSection .upload-placeholder-box');
 
             coverPreviewEl.classList.add('hidden');
             coverPreviewEl.innerHTML = '';
@@ -2776,43 +2819,52 @@
             if (imageData.photos.length > 0) {
                 imageData.coverSource = 'auto-photos';
                 imageData.cover = { src: imageData.photos[0].src, name: imageData.photos[0].name, width: imageData.photos[0].width, height: imageData.photos[0].height };
-                renderCoverPreview();
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                    placeholderBox.onclick = null;
+                }
             } else if (imageData.header) {
                 imageData.coverSource = 'auto-header';
                 imageData.cover = { src: imageData.header.src, name: imageData.header.name, width: imageData.header.width, height: imageData.header.height };
-                renderCoverPreview();
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                    placeholderBox.onclick = null;
+                }
             } else if (imageData.headerColor) {
                 imageData.coverSource = 'auto-header-color';
                 imageData.cover = { src: null, color: imageData.headerColor };
-                renderCoverPreview();
+                if (placeholderBox) {
+                    placeholderBox.classList.add('has-image');
+                    placeholderBox.innerHTML = `<div style="width:100%;height:100%;background-color:${imageData.headerColor};"></div>`;
+                    placeholderBox.onclick = null;
+                }
             } else {
                 imageData.coverSource = 'none';
                 imageData.cover = null;
+                if (placeholderBox) {
+                    placeholderBox.classList.remove('has-image');
+                    placeholderBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+                    placeholderBox.onclick = openCoverUpload;
+                }
             }
         }
 
         function renderCoverPreview() {
-            const coverPreviewEl = document.getElementById('coverPreviewContainer');
+            const placeholderBox = document.querySelector('#coverImageSection .upload-placeholder-box');
+
             if (!imageData.cover) return;
 
-            coverPreviewEl.classList.remove('hidden');
+            if (placeholderBox) {
+                placeholderBox.classList.add('has-image');
 
-            if (imageData.cover.color) {
-                coverPreviewEl.innerHTML = `
-                    <div class="preview-box">
-                        <div class="preview-thumb" style="width:80px;height:80px;">
-                            <div style="width:100%;height:100%;background-color:${imageData.cover.color};border-radius:4px;"></div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                coverPreviewEl.innerHTML = `
-                    <div class="preview-box">
-                        <div class="preview-thumb" style="width:80px;height:80px;border-radius:4px;overflow:hidden;">
-                            <img src="${imageData.cover.src}" alt="Cover" style="width:100%;height:100%;object-fit:cover;">
-                        </div>
-                    </div>
-                `;
+                if (imageData.cover.color) {
+                    placeholderBox.innerHTML = `<div style="width:100%;height:100%;background-color:${imageData.cover.color};"></div>`;
+                } else {
+                    placeholderBox.innerHTML = `<img src="${imageData.cover.src}" alt="Cover">`;
+                }
+                placeholderBox.onclick = null;
             }
         }
 
@@ -2869,7 +2921,23 @@
                 container.classList.add('hidden');
                 container.innerHTML = '';
             }
-            // Reset icon back to upload
+
+            const placeholderBox = document.querySelector(`#${type}Section .upload-placeholder-box`);
+            if (placeholderBox) {
+                placeholderBox.classList.remove('has-image');
+                placeholderBox.innerHTML = '<span class="upload-placeholder-plus">+</span>';
+                
+                if (type === 'logo') {
+                    placeholderBox.onclick = triggerLogoLocalUpload;
+                } else if (type === 'header') {
+                    placeholderBox.onclick = triggerHeaderLocalUpload;
+                } else if (type === 'photo') {
+                    placeholderBox.onclick = triggerPhotoLocalUpload;
+                } else if (type === 'cover') {
+                    placeholderBox.onclick = openCoverUpload;
+                }
+            }
+
             const iconEl = document.querySelector(`#${type}Section .form-image-right .zmdi`);
             if (iconEl) {
                 iconEl.className = 'zmdi zmdi-upload';
